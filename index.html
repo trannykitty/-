@@ -1,70 +1,38 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <title>Mad Mice</title>
-  <link rel="stylesheet" href="./style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Mad Mice — Cozy</title>
+<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <canvas id="game"></canvas>
-
-  <div id="hud" class="hud hidden">
-    <div class="hud-box">
-      <strong id="score">0</strong>
-      <span>score</span>
-    </div>
-    <div class="hud-box">
-      <strong id="combo">×1</strong>
-      <span>combo</span>
-    </div>
-    <div class="hud-box">
-      <strong id="level">1</strong>
-      <span>level</span>
-    </div>
-    <div class="hud-box lives-box">
-      <strong id="lives">♥ ♥ ♥</strong>
-      <span>lives</span>
-    </div>
-    <button id="pause" class="hud-button">Ⅱ</button>
+<canvas id="game"></canvas>
+<div id="hud" class="hidden">
+  <div><b id="score">0</b><small>score</small></div>
+  <div><b id="combo">×1</b><small>combo</small></div>
+  <div><b id="best">0</b><small>best</small></div>
+  <button id="pause">Ⅱ</button>
+</div>
+<section id="menu" class="screen">
+  <div class="card">
+    <div class="mouse-logo">🐭</div>
+    <h1>Mad Mice</h1>
+    <p>A tiny, cozy game about catching wandering mice.<br>There is no rush. Just relax and play.</p>
+    <button id="play">Relax &amp; Play</button>
+    <button id="endless" class="soft">Endless &amp; Chill</button>
+    <small>Click or tap a mouse</small>
   </div>
-
-  <div id="menu" class="screen">
-    <div class="card">
-      <div class="logo">🐭</div>
-      <h1>Mad Mice</h1>
-      <p>Catch the mice before they escape. Build your combo and survive as long as you can.</p>
-      <div class="buttons">
-        <button id="normalBtn">Start Hunting</button>
-        <button id="endlessBtn" class="secondary">Endless Mode</button>
-      </div>
-      <small>Mouse or touchscreen • click/tap a mouse to catch it</small>
-    </div>
+</section>
+<section id="pauseScreen" class="screen hidden">
+  <div class="card"><h2>Taking a little break</h2><button id="resume">Continue</button><button id="quit" class="soft">Main Menu</button></div>
+</section>
+<section id="over" class="screen hidden">
+  <div class="card"><div class="mouse-logo">🌙</div><h2>Cozy session complete</h2>
+    <div class="results"><div><b id="finalScore">0</b><small>score</small></div><div><b id="finalCaught">0</b><small>caught</small></div></div>
+    <button id="again">Play Again</button><button id="home" class="soft">Main Menu</button>
   </div>
-
-  <div id="pauseScreen" class="screen hidden">
-    <div class="card">
-      <h2>Paused</h2>
-      <button id="resumeBtn">Resume</button>
-      <button id="quitBtn" class="secondary">Quit to Menu</button>
-    </div>
-  </div>
-
-  <div id="gameOver" class="screen hidden">
-    <div class="card">
-      <div class="logo">🐾</div>
-      <h2 id="resultTitle">Game Over</h2>
-      <div class="results">
-        <div><strong id="finalScore">0</strong><span>score</span></div>
-        <div><strong id="finalCaught">0</strong><span>caught</span></div>
-        <div><strong id="finalBest">0</strong><span>best</span></div>
-      </div>
-      <button id="againBtn">Play Again</button>
-      <button id="menuBtn" class="secondary">Main Menu</button>
-    </div>
-  </div>
-
-  <div id="toast"></div>
-  <script src="./script.js"></script>
+</section>
+<script src="./script.js"></script>
 </body>
 </html>

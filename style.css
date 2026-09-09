@@ -1,28 +1,7 @@
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#10151b;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-body{touch-action:none;user-select:none}
-#game{display:block;width:100vw;height:100vh}
-.hidden{display:none!important}
-.hud{position:fixed;z-index:10;top:14px;left:14px;right:14px;display:flex;gap:9px;align-items:center}
-.hud-box{min-width:78px;padding:8px 12px;border:1px solid #ffffff1c;border-radius:14px;background:#091017cc;color:#fff;box-shadow:0 8px 28px #0006;backdrop-filter:blur(10px);text-align:center}
-.hud-box strong{display:block;font-size:19px;line-height:21px}
-.hud-box span{display:block;margin-top:2px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#aeb9be}
-.lives-box{margin-left:auto;min-width:125px}
-.hud-button{height:42px;width:42px;border:1px solid #ffffff20;border-radius:13px;background:#091017cc;color:#fff;font-size:19px;cursor:pointer}
-.screen{position:fixed;z-index:20;inset:0;display:grid;place-items:center;padding:20px;background:#02060aaa;backdrop-filter:blur(6px)}
-.card{width:min(92vw,500px);padding:32px;border:1px solid #ffffff20;border-radius:26px;background:#101820f2;color:#fff;text-align:center;box-shadow:0 30px 100px #0009}
-.logo{font-size:54px;line-height:1}
-h1{margin:4px 0 8px;font-size:48px;letter-spacing:-2px}
-h2{margin:0 0 18px;font-size:34px}
-p{margin:8px 0 22px;color:#c6d1d6;line-height:1.55}
-.buttons{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-button{border:0;border-radius:14px;padding:14px 24px;font-size:16px;font-weight:900;background:#fff;color:#121a20;cursor:pointer;transition:transform .12s,filter .12s}
-button:hover{transform:translateY(-1px);filter:brightness(1.05)}
-button:active{transform:translateY(1px)}
-button.secondary{background:#d8e1e5}
-small{display:block;margin-top:17px;color:#8d9aa0}
-.results{display:flex;justify-content:center;gap:30px;margin:12px 0 25px}
-.results strong{display:block;font-size:30px}
-.results span{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#8d9aa0}
-#toast{position:fixed;z-index:15;left:50%;top:48%;transform:translate(-50%,-50%);font-weight:1000;font-size:34px;color:#fff;text-shadow:0 4px 12px #000;pointer-events:none;opacity:0}
-@media(max-width:560px){.hud{top:8px;left:8px;right:8px;gap:5px}.hud-box{min-width:58px;padding:7px 8px}.lives-box{min-width:95px}.hud-box strong{font-size:16px}.card{padding:25px 20px}h1{font-size:40px}}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#182127;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}body{touch-action:none;user-select:none}
+#game{width:100vw;height:100vh;display:block}
+#hud{position:fixed;z-index:5;top:16px;left:16px;right:16px;display:flex;gap:9px;align-items:center}
+#hud>div{min-width:72px;text-align:center;padding:8px 12px;border:1px solid #ffffff18;border-radius:15px;background:#132027c9;color:#f5f8f8;box-shadow:0 8px 25px #0003;backdrop-filter:blur(10px)}
+#hud b{display:block;font-size:19px}#hud small{display:block;color:#aebabc;font-size:9px;text-transform:uppercase;letter-spacing:1px}#pause{margin-left:auto;width:42px;height:42px;padding:0;border:1px solid #ffffff18;border-radius:14px;background:#132027c9;color:white;font-size:18px}
+.screen{position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:20px;background:#081015b8;backdrop-filter:blur(5px)}.hidden{display:none!important}
+.card{width:min(92vw,490px);padding:34px;border:1px solid #ffffff1b;border-radius:28px;background:#152027ef;color:white;text-align:center;box-shadow:0 30px 90px #0008}.mouse-logo{font-size:50px}h1{font-size:48px;letter-spacing:-2px;margin:3px 0 8px}h2{font-size:30px;margin:4px 0 20px}p{color:#c4d0d2;line-height:1.55;margin:8px 0 24px}button{border:0;border-radius:15px;padding:14px 24px;margin:4px;font-size:16px;font-weight:900;background:#f4f7f7;color:#152027;cursor:pointer;transition:.15s}button:hover{transform:translateY(-1px)}button:active{transform:scale(.98)}button.soft{background:#d7e1e3}small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-content:center;gap:42px;margin:12px 0 22px}.results b{font-size:34px;display:block}.results small{margin:0}
