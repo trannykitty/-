@@ -9,11 +9,12 @@
 <body>
 <canvas id="game"></canvas>
 
+<audio id="catchSound" preload="auto" src="./click.wav"></audio>
 <div id="hud" class="hidden">
   <div><b id="score">0</b><small>score</small></div>
   <div><b id="combo">x1</b><small>combo</small></div>
   <div><b id="best">0</b><small>best</small></div>
-  <button id="pause" type="button">Ⅱ</button>
+  <button id="sound" type="button" aria-label="Sound on">🔊</button><button id="pause" type="button">Ⅱ</button>
 </div>
 
 <div id="menu" class="screen">

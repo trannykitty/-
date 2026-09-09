@@ -14,60 +14,19 @@ var state="menu",mode="normal";
 var mice=[],particles=[];
 var score=0,caught=0,combo=0,best=Number(localStorage.getItem("MadMiceBest")||0);
 var spawnTimer=0,lastTime=0;
-var audioCtx=null;
+var soundEnabled=true;
+var catchSound=document.getElementById("catchSound");
 
-function initAudio(){
+function playCatchSound(){
+  if(!soundEnabled||!catchSound)return;
   try{
-    if(!audioCtx){
-      var AC=window.AudioContext||window.webkitAudioContext;
-      if(AC) audioCtx=new AC();
-    }
-    if(audioCtx && audioCtx.state==="suspended") audioCtx.resume();
+    catchSound.currentTime=0;
+    catchSound.volume=0.85;
+    var p=catchSound.play();
+    if(p&&p.catch)p.catch(function(){});
   }catch(e){}
 }
 
-function clickSound(gold){
-  initAudio();
-  if(!audioCtx)return;
-  try{
-    var now=audioCtx.currentTime;
-    var osc=audioCtx.createOscillator();
-    var gain=audioCtx.createGain();
-    var filter=audioCtx.createBiquadFilter();
-
-    osc.type="sine";
-    osc.frequency.setValueAtTime(gold?720:540,now);
-    osc.frequency.exponentialRampToValueAtTime(gold?1040:820,now+0.075);
-
-    filter.type="lowpass";
-    filter.frequency.setValueAtTime(1800,now);
-
-    gain.gain.setValueAtTime(0.0001,now);
-    gain.gain.exponentialRampToValueAtTime(gold?0.13:0.10,now+0.008);
-    gain.gain.exponentialRampToValueAtTime(0.0001,now+0.16);
-
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start(now);
-    osc.stop(now+0.18);
-
-    if(gold){
-      var sparkle=audioCtx.createOscillator();
-      var sparkleGain=audioCtx.createGain();
-      sparkle.type="sine";
-      sparkle.frequency.setValueAtTime(1100,now+0.035);
-      sparkle.frequency.exponentialRampToValueAtTime(1450,now+0.12);
-      sparkleGain.gain.setValueAtTime(0.0001,now+0.035);
-      sparkleGain.gain.exponentialRampToValueAtTime(0.055,now+0.045);
-      sparkleGain.gain.exponentialRampToValueAtTime(0.0001,now+0.15);
-      sparkle.connect(sparkleGain);
-      sparkleGain.connect(audioCtx.destination);
-      sparkle.start(now+0.03);
-      sparkle.stop(now+0.16);
-    }
-  }catch(e){}
-}
 
 function resize(){
   dpr=Math.min(window.devicePixelRatio||1,2);
@@ -90,7 +49,6 @@ function updateHud(){
 }
 
 function startGame(selectedMode){
-  initAudio();
   mode=selectedMode;
   state="playing";
   score=0;
@@ -188,7 +146,6 @@ function drawMouse(m){
 }
 
 function catchMouse(m,x,y){
-  clickSound(m.gold);
   combo++;
   caught++;
   score+=m.gold?5:1;
@@ -255,7 +212,6 @@ function gameLoop(now){
 }
 
 canvas.addEventListener("pointerdown",function(e){
-  initAudio();
   if(state!=="playing")return;
 
   var r=canvas.getBoundingClientRect();
@@ -312,4 +268,9 @@ window.addEventListener("error",function(e){
 });
 
 updateHud();
+
+document.getElementById("sound").addEventListener("click",function(){
+  soundEnabled=!soundEnabled;
+  this.textContent=soundEnabled?"🔊":"🔇";
+});
 })();

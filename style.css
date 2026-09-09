@@ -17,6 +17,4 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 .error{position:fixed;z-index:100;left:15px;right:15px;bottom:15px;padding:14px;border-radius:12px;background:#6d2730;color:white;font-weight:700}
 @media(max-width:560px){.card{padding:25px 18px}h1{font-size:40px}}
 
-button{transition:transform .12s ease,box-shadow .12s ease}
-button:hover{box-shadow:0 8px 22px rgba(0,0,0,.22)}
-button:active{box-shadow:0 3px 10px rgba(0,0,0,.18)}
+#sound{pointer-events:auto;width:43px;height:43px;padding:0;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(15,25,31,.82);color:white;font-size:17px}
