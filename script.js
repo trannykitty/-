@@ -1,16 +1,258 @@
-(()=>{"use strict";
-const c=document.getElementById("game"),x=c.getContext("2d"),hud=document.getElementById("hud"),menu=document.getElementById("menu"),pauseS=document.getElementById("pauseScreen"),over=document.getElementById("over");
-let W=innerWidth,H=innerHeight,dpr=1,state="menu",mice=[],parts=[],score=0,caught=0,combo=0,last=0,spawn=0,mode="normal",best=Number(localStorage.getItem("madMiceBest")||0);
-function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+"px";c.style.height=H+"px";x.setTransform(dpr,0,0,dpr,0,0)}addEventListener("resize",resize);resize();
-const R=(a,b)=>a+Math.random()*(b-a);
-function hudUpdate(){document.getElementById("score").textContent=score;document.getElementById("combo").textContent="×"+Math.max(1,combo);document.getElementById("best").textContent=best;if(score>best){best=score;localStorage.setItem("madMiceBest",best)}}
-function start(m){mode=m;mice=[];parts=[];score=0;caught=0;combo=0;spawn=1;state="play";menu.classList.add("hidden");over.classList.add("hidden");pauseS.classList.add("hidden");hud.classList.remove("hidden");hudUpdate();last=performance.now();requestAnimationFrame(loop)}
-function addMouse(){let left=Math.random()<.5,level=1+Math.floor(score/15),speed=R(55,95)+level*2; mice.push({x:left?-50:W+50,y:R(110,H-80),vx:left?speed:-speed,phase:R(0,7),size:R(.9,1.12),gold:Math.random()<.08})}
-function drawBg(){let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,"#65767a");g.addColorStop(.55,"#526367");g.addColorStop(1,"#354447");x.fillStyle=g;x.fillRect(0,0,W,H);x.globalAlpha=.07;x.strokeStyle="#fff";for(let i=0;i<W;i+=90){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke()}for(let i=0;i<H;i+=90){x.beginPath();x.moveTo(0,i);x.lineTo(W,i);x.stroke()}x.globalAlpha=1}
-function mouse(m){let y=m.y+Math.sin(m.phase)*8;x.save();x.translate(m.x,y);x.scale(m.vx<0?-m.size:m.size,m.size);x.fillStyle="#0003";x.beginPath();x.ellipse(0,26,30,6,0,0,7);x.fill();x.strokeStyle=m.gold?"#e3c77a":"#aeb7b8";x.lineWidth=4;x.beginPath();x.arc(-27,7,19,.4,4.8);x.stroke();x.fillStyle=m.gold?"#cbb574":"#aab3b5";x.beginPath();x.ellipse(0,8,29,19,0,0,7);x.fill();x.fillStyle=m.gold?"#d9c487":"#bdc5c7";x.beginPath();x.arc(28,5,17,0,7);x.fill();x.beginPath();x.arc(25,-9,11,0,7);x.arc(37,-7,10,0,7);x.fill();x.fillStyle="#101719";x.beginPath();x.arc(36,1,2.5,0,7);x.fill();x.fillStyle="#e7a1ab";x.beginPath();x.arc(44,8,3,0,7);x.fill();x.restore()}
-function burst(px,py){for(let i=0;i<10;i++){let a=R(0,7),s=R(20,70);parts.push({x:px,y:py,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:R(2,4),life:.5})}}
-function catchM(m,px,py){m.dead=1;combo++;caught++;score+=m.gold?5:1;if(score>best){best=score;localStorage.setItem("madMiceBest",best)}burst(px,py);mice=mice.filter(q=>q!==m);hudUpdate()}
-function loop(t){if(state!=="play")return;let dt=Math.min((t-last)/1000,.04);last=t;spawn+=dt;let interval=Math.max(.72,1.25-Math.floor(score/15)*.035);if(spawn>interval){spawn=0;addMouse();if(score>30&&Math.random()<.12)addMouse()}drawBg();for(const m of [...mice]){m.phase+=dt*2.5;m.x+=m.vx*dt;mouse(m);if(m.x<-80||m.x>W+80){mice=mice.filter(q=>q!==m);combo=0;hudUpdate()}}for(const p of parts){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=55*dt;x.globalAlpha=Math.max(0,p.life/.5);x.fillStyle="#f7eeee";x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()}x.globalAlpha=1;parts=parts.filter(p=>p.life>0);requestAnimationFrame(loop)}
-c.addEventListener("pointerdown",e=>{if(state!=="play")return;let r=c.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top;for(let i=mice.length-1;i>=0;i--){let m=mice[i],yy=m.y+Math.sin(m.phase)*8,dx=px-m.x,dy=py-yy;if(dx*dx+dy*dy<52*52){catchM(m,px,py);break}}});
-document.getElementById("play").onclick=()=>start("normal");document.getElementById("endless").onclick=()=>start("endless");document.getElementById("again").onclick=()=>start(mode);document.getElementById("home").onclick=()=>{state="menu";over.classList.add("hidden");hud.classList.add("hidden");menu.classList.remove("hidden")};document.getElementById("pause").onclick=()=>{if(state==="play"){state="pause";pauseS.classList.remove("hidden")}};document.getElementById("resume").onclick=()=>{state="play";pauseS.classList.add("hidden");last=performance.now();requestAnimationFrame(loop)};document.getElementById("quit").onclick=()=>document.getElementById("home").click();
+(function(){
+"use strict";
+
+var canvas=document.getElementById("game");
+var ctx=canvas.getContext("2d");
+var menu=document.getElementById("menu");
+var hud=document.getElementById("hud");
+var pauseScreen=document.getElementById("pauseScreen");
+var over=document.getElementById("over");
+var errorBox=document.getElementById("error");
+
+var W=window.innerWidth,H=window.innerHeight,dpr=1;
+var state="menu",mode="normal";
+var mice=[],particles=[];
+var score=0,caught=0,combo=0,best=Number(localStorage.getItem("MadMiceBest")||0);
+var spawnTimer=0,lastTime=0;
+
+function resize(){
+  dpr=Math.min(window.devicePixelRatio||1,2);
+  W=window.innerWidth; H=window.innerHeight;
+  canvas.width=Math.floor(W*dpr);
+  canvas.height=Math.floor(H*dpr);
+  canvas.style.width=W+"px";
+  canvas.style.height=H+"px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener("resize",resize);
+resize();
+
+function rand(a,b){return a+Math.random()*(b-a)}
+
+function updateHud(){
+  document.getElementById("score").textContent=score;
+  document.getElementById("combo").textContent="x"+Math.max(1,combo);
+  document.getElementById("best").textContent=best;
+}
+
+function startGame(selectedMode){
+  mode=selectedMode;
+  state="playing";
+  score=0;
+  caught=0;
+  combo=0;
+  spawnTimer=999;
+  mice=[];
+  particles=[];
+
+  menu.classList.add("hidden");
+  over.classList.add("hidden");
+  pauseScreen.classList.add("hidden");
+  hud.classList.remove("hidden");
+
+  updateHud();
+
+  /* Spawn immediately so the game visibly starts. */
+  spawnMouse();
+  spawnMouse();
+
+  lastTime=performance.now();
+  requestAnimationFrame(gameLoop);
+}
+
+function spawnMouse(){
+  var fromLeft=Math.random()<0.5;
+  var level=1+Math.floor(score/15);
+  var speed=55+Math.random()*45+level*2;
+  var m={
+    x:fromLeft?-70:W+70,
+    y:100+Math.random()*Math.max(80,H-190),
+    vx:fromLeft?speed:-speed,
+    phase:Math.random()*Math.PI*2,
+    wiggle:5+Math.random()*8,
+    size:.9+Math.random()*.18,
+    gold:Math.random()<.08
+  };
+  mice.push(m);
+}
+
+function drawBackground(){
+  var g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,"#66777b");
+  g.addColorStop(.55,"#526366");
+  g.addColorStop(1,"#354447");
+  ctx.fillStyle=g;
+  ctx.fillRect(0,0,W,H);
+
+  ctx.globalAlpha=.07;
+  ctx.strokeStyle="#ffffff";
+  var i;
+  for(i=0;i<W;i+=90){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,H);ctx.stroke()}
+  for(i=0;i<H;i+=90){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(W,i);ctx.stroke()}
+  ctx.globalAlpha=1;
+}
+
+function drawMouse(m){
+  var y=m.y+Math.sin(m.phase)*m.wiggle;
+  ctx.save();
+  ctx.translate(m.x,y);
+  ctx.scale(m.vx<0?-m.size:m.size,m.size);
+
+  ctx.strokeStyle=m.gold?"#e4c97c":"#aeb7b8";
+  ctx.lineWidth=4;
+  ctx.beginPath();
+  ctx.arc(-27,7,19,.4,4.8);
+  ctx.stroke();
+
+  ctx.fillStyle=m.gold?"#cbb574":"#aab3b5";
+  ctx.beginPath();
+  ctx.ellipse(0,8,29,19,0,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle=m.gold?"#dcc886":"#bdc5c7";
+  ctx.beginPath();
+  ctx.arc(28,5,17,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(25,-9,11,0,Math.PI*2);
+  ctx.arc(37,-7,10,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle="#101719";
+  ctx.beginPath();
+  ctx.arc(36,1,2.5,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle="#e7a1ab";
+  ctx.beginPath();
+  ctx.arc(44,8,3,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function catchMouse(m,x,y){
+  combo++;
+  caught++;
+  score+=m.gold?5:1;
+  if(score>best){
+    best=score;
+    localStorage.setItem("MadMiceBest",String(best));
+  }
+  for(var i=0;i<10;i++){
+    var a=Math.random()*Math.PI*2,s=20+Math.random()*60;
+    particles.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:2+Math.random()*3,life:.55});
+  }
+  mice=mice.filter(function(q){return q!==m});
+  updateHud();
+}
+
+function gameLoop(now){
+  if(state!=="playing")return;
+
+  var dt=Math.min((now-lastTime)/1000,.04);
+  lastTime=now;
+  spawnTimer+=dt;
+
+  var level=1+Math.floor(score/15);
+  var interval=Math.max(.72,1.25-level*.025);
+
+  if(spawnTimer>=interval){
+    spawnTimer=0;
+    spawnMouse();
+    if(level>=6 && Math.random()<.1)spawnMouse();
+  }
+
+  drawBackground();
+
+  var copy=mice.slice();
+  for(var i=0;i<copy.length;i++){
+    var m=copy[i];
+    m.phase+=dt*2.4;
+    m.x+=m.vx*dt;
+    drawMouse(m);
+
+    if(m.x<-90||m.x>W+90){
+      mice=mice.filter(function(q){return q!==m});
+      combo=0;
+      updateHud();
+    }
+  }
+
+  for(var p=particles.length-1;p>=0;p--){
+    var q=particles[p];
+    q.life-=dt;
+    q.x+=q.vx*dt;
+    q.y+=q.vy*dt;
+    q.vy+=50*dt;
+    ctx.globalAlpha=Math.max(0,q.life/.55);
+    ctx.fillStyle="#fff";
+    ctx.beginPath();
+    ctx.arc(q.x,q.y,q.r,0,Math.PI*2);
+    ctx.fill();
+    if(q.life<=0)particles.splice(p,1);
+  }
+  ctx.globalAlpha=1;
+
+  requestAnimationFrame(gameLoop);
+}
+
+canvas.addEventListener("pointerdown",function(e){
+  if(state!=="playing")return;
+
+  var r=canvas.getBoundingClientRect();
+  var px=e.clientX-r.left;
+  var py=e.clientY-r.top;
+
+  for(var i=mice.length-1;i>=0;i--){
+    var m=mice[i];
+    var my=m.y+Math.sin(m.phase)*m.wiggle;
+    var dx=px-m.x,dy=py-my;
+    if(dx*dx+dy*dy<58*58){
+      catchMouse(m,px,py);
+      return;
+    }
+  }
+});
+
+document.getElementById("play").addEventListener("click",function(){startGame("normal")});
+document.getElementById("endless").addEventListener("click",function(){startGame("endless")});
+
+document.getElementById("pause").addEventListener("click",function(){
+  if(state==="playing"){
+    state="paused";
+    pauseScreen.classList.remove("hidden");
+  }
+});
+
+document.getElementById("resume").addEventListener("click",function(){
+  if(state==="paused"){
+    state="playing";
+    pauseScreen.classList.add("hidden");
+    lastTime=performance.now();
+    requestAnimationFrame(gameLoop);
+  }
+});
+
+function mainMenu(){
+  state="menu";
+  mice=[];
+  particles=[];
+  hud.classList.add("hidden");
+  pauseScreen.classList.add("hidden");
+  over.classList.add("hidden");
+  menu.classList.remove("hidden");
+}
+
+document.getElementById("quit").addEventListener("click",mainMenu);
+document.getElementById("home").addEventListener("click",mainMenu);
+document.getElementById("again").addEventListener("click",function(){startGame(mode)});
+
+window.addEventListener("error",function(e){
+  errorBox.textContent="Game error: "+(e.message||"JavaScript error");
+  errorBox.classList.remove("hidden");
+});
+
+updateHud();
 })();

@@ -8,31 +8,47 @@
 </head>
 <body>
 <canvas id="game"></canvas>
+
 <div id="hud" class="hidden">
   <div><b id="score">0</b><small>score</small></div>
-  <div><b id="combo">×1</b><small>combo</small></div>
+  <div><b id="combo">x1</b><small>combo</small></div>
   <div><b id="best">0</b><small>best</small></div>
-  <button id="pause">Ⅱ</button>
+  <button id="pause" type="button">Ⅱ</button>
 </div>
-<section id="menu" class="screen">
+
+<div id="menu" class="screen">
   <div class="card">
-    <div class="mouse-logo">🐭</div>
+    <div class="logo">🐭</div>
     <h1>Mad Mice</h1>
     <p>A tiny, cozy game about catching wandering mice.<br>There is no rush. Just relax and play.</p>
-    <button id="play">Relax &amp; Play</button>
-    <button id="endless" class="soft">Endless &amp; Chill</button>
+    <button id="play" type="button">Relax &amp; Play</button>
+    <button id="endless" class="soft" type="button">Endless &amp; Chill</button>
     <small>Click or tap a mouse</small>
   </div>
-</section>
-<section id="pauseScreen" class="screen hidden">
-  <div class="card"><h2>Taking a little break</h2><button id="resume">Continue</button><button id="quit" class="soft">Main Menu</button></div>
-</section>
-<section id="over" class="screen hidden">
-  <div class="card"><div class="mouse-logo">🌙</div><h2>Cozy session complete</h2>
-    <div class="results"><div><b id="finalScore">0</b><small>score</small></div><div><b id="finalCaught">0</b><small>caught</small></div></div>
-    <button id="again">Play Again</button><button id="home" class="soft">Main Menu</button>
+</div>
+
+<div id="pauseScreen" class="screen hidden">
+  <div class="card">
+    <h2>Paused</h2>
+    <button id="resume" type="button">Continue</button>
+    <button id="quit" class="soft" type="button">Main Menu</button>
   </div>
-</section>
+</div>
+
+<div id="over" class="screen hidden">
+  <div class="card">
+    <div class="logo">🌙</div>
+    <h2>Cozy session complete</h2>
+    <div class="results">
+      <div><b id="finalScore">0</b><small>score</small></div>
+      <div><b id="finalCaught">0</b><small>caught</small></div>
+    </div>
+    <button id="again" type="button">Play Again</button>
+    <button id="home" class="soft" type="button">Main Menu</button>
+  </div>
+</div>
+
+<div id="error" class="error hidden"></div>
 <script src="./script.js"></script>
 </body>
 </html>
