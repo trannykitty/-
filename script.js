@@ -20,7 +20,7 @@ let state = "menu";
 let mode = "normal";
 let score = 0, caught = 0, combo = 0, lives = 3;
 let spawnClock = 0, last = 0, elapsed = 0;
-let best = Number(localStorage.getItem("madMiceBest") || 0);
+var best = Number(localStorage.getItem("madMiceBest") || 0);
 let audioCtx = null;
 
 const mouseRadius = 28;
@@ -39,7 +39,7 @@ resize();
 
 function sound(type){
   try{
-    audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if(audioCtx.state === "suspended") audioCtx.resume();
     const o=audioCtx.createOscillator(), g=audioCtx.createGain();
     o.connect(g); g.connect(audioCtx.destination);
@@ -310,3 +310,15 @@ addEventListener("keydown",e=>{
 
 updateHud();
 })();
+
+window.addEventListener("error", function(e) {
+  var box = document.getElementById("toast");
+  if (box) {
+    box.textContent = "Game error: " + (e.message || "JavaScript failed to load");
+    box.style.opacity = "1";
+    box.style.fontSize = "16px";
+    box.style.background = "rgba(120,20,30,.9)";
+    box.style.padding = "12px 18px";
+    box.style.borderRadius = "12px";
+  }
+});
