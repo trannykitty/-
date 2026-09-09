@@ -146,6 +146,7 @@ function drawMouse(m){
 }
 
 function catchMouse(m,x,y){
+  playCatchSound();
   combo++;
   caught++;
   score+=m.gold?5:1;
