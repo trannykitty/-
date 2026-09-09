@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Mad Mice — Deluxe</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game">
+    <div id="hud">
+      <div class="panel">
+        <div id="score">0</div>
+        <div id="combo">Combo ×1</div>
+        <div id="best">Best 0</div>
+      </div>
+      <div class="panel right">
+        <div id="lives">♥ ♥ ♥</div>
+        <div id="level">Level 1</div>
+      </div>
+    </div>
+
+    <div id="tip">Tap the mice before they escape</div>
+    <div id="mouseLayer"></div>
+    <div id="vignette"></div>
+
+    <div id="screen">
+      <div class="card">
+        <h1>🐭 Mad Mice</h1>
+        <p>The deluxe cat-game edition. Catch the mice, build a combo, and survive as long as you can.</p>
+        <div class="stats">
+          <div class="stat"><b>🐾</b><span>Tap to catch</span></div>
+          <div class="stat"><b>⚡</b><span>Build combos</span></div>
+          <div class="stat"><b>❤️</b><span>3 lives</span></div>
+        </div>
+        <div class="mode-buttons"><button id="start">Start Hunting</button><button id="endless">Endless Mode</button></div>
+      </div>
+    </div>
+
+    <div id="over">
+      <div class="card">
+        <h2>Mouse escaped!</h2>
+        <div class="stats">
+          <div class="stat"><b id="final">0</b><span>Score</span></div>
+          <div class="stat"><b id="bestFinal">0</b><span>Best</span></div>
+          <div class="stat"><b id="caught">0</b><span>Caught</span></div>
+        </div>
+        <button id="again">Hunt Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
