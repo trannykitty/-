@@ -1,60 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mad Mice — Deluxe</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Mad Mice</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <main id="game">
-    <div id="hud">
-      <div class="panel">
-        <div id="score">0</div>
-        <div id="combo">Combo ×1</div>
-        <div id="best">Best 0</div>
-      </div>
-      <div class="panel right">
-        <div id="lives">♥ ♥ ♥</div>
-        <div id="level">Level 1</div>
-      </div>
+  <canvas id="game"></canvas>
+
+  <div id="hud" class="hud hidden">
+    <div class="hud-box">
+      <strong id="score">0</strong>
+      <span>score</span>
     </div>
+    <div class="hud-box">
+      <strong id="combo">×1</strong>
+      <span>combo</span>
+    </div>
+    <div class="hud-box">
+      <strong id="level">1</strong>
+      <span>level</span>
+    </div>
+    <div class="hud-box lives-box">
+      <strong id="lives">♥ ♥ ♥</strong>
+      <span>lives</span>
+    </div>
+    <button id="pause" class="hud-button">Ⅱ</button>
+  </div>
 
-    <div id="tip">Tap the mice before they escape</div>
-    <div id="mouseLayer"></div>
-    <div id="vignette"></div>
-
-    <section id="screen" class="overlay">
-      <div class="card">
-        <div class="title-icon">🐭</div>
-        <h1>Mad Mice</h1>
-        <p>The deluxe cat-game edition. Catch the mice, build a combo, and survive as long as you can.</p>
-        <div class="stats">
-          <div class="stat"><b>🐾</b><span>Tap to catch</span></div>
-          <div class="stat"><b>⚡</b><span>Build combos</span></div>
-          <div class="stat"><b>❤️</b><span>3 lives</span></div>
-        </div>
-        <div class="mode-buttons">
-          <button id="start">Start Hunting</button>
-          <button id="endless">Endless Mode</button>
-        </div>
+  <div id="menu" class="screen">
+    <div class="card">
+      <div class="logo">🐭</div>
+      <h1>Mad Mice</h1>
+      <p>Catch the mice before they escape. Build your combo and survive as long as you can.</p>
+      <div class="buttons">
+        <button id="normalBtn">Start Hunting</button>
+        <button id="endlessBtn" class="secondary">Endless Mode</button>
       </div>
-    </section>
+      <small>Mouse or touchscreen • click/tap a mouse to catch it</small>
+    </div>
+  </div>
 
-    <section id="over" class="overlay hidden">
-      <div class="card">
-        <div class="title-icon">🐭</div>
-        <h2>Mouse escaped!</h2>
-        <div class="stats">
-          <div class="stat"><b id="final">0</b><span>Score</span></div>
-          <div class="stat"><b id="bestFinal">0</b><span>Best</span></div>
-          <div class="stat"><b id="caught">0</b><span>Caught</span></div>
-        </div>
-        <button id="again">Hunt Again</button>
+  <div id="pauseScreen" class="screen hidden">
+    <div class="card">
+      <h2>Paused</h2>
+      <button id="resumeBtn">Resume</button>
+      <button id="quitBtn" class="secondary">Quit to Menu</button>
+    </div>
+  </div>
+
+  <div id="gameOver" class="screen hidden">
+    <div class="card">
+      <div class="logo">🐾</div>
+      <h2 id="resultTitle">Game Over</h2>
+      <div class="results">
+        <div><strong id="finalScore">0</strong><span>score</span></div>
+        <div><strong id="finalCaught">0</strong><span>caught</span></div>
+        <div><strong id="finalBest">0</strong><span>best</span></div>
       </div>
-    </section>
-  </main>
+      <button id="againBtn">Play Again</button>
+      <button id="menuBtn" class="secondary">Main Menu</button>
+    </div>
+  </div>
 
+  <div id="toast"></div>
   <script src="./script.js"></script>
 </body>
 </html>
