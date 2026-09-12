@@ -13,6 +13,19 @@ var W=window.innerWidth,H=window.innerHeight,dpr=1;
 var state="menu",mode="normal";
 var mice=[],particles=[];
 var score=0,caught=0,combo=0,best=Number(localStorage.getItem("MadMiceBest")||0);
+var lifetimeCaught=Number(localStorage.getItem("MadMiceLifetimeCaught")||0);
+var equippedHat=localStorage.getItem("MadMiceHat")||"none";
+var hats=[
+  {id:"none",name:"No Hat",icon:"🐭",need:0},
+  {id:"party",name:"Party Hat",icon:"🥳",need:10},
+  {id:"cowboy",name:"Cowboy",icon:"🤠",need:25},
+  {id:"crown",name:"Tiny Crown",icon:"👑",need:50},
+  {id:"wizard",name:"Wizard",icon:"🧙",need:100},
+  {id:"chef",name:"Chef Hat",icon:"👨‍🍳",need:175},
+  {id:"tophat",name:"Top Hat",icon:"🎩",need:300},
+  {id:"flower",name:"Flower Hat",icon:"🌸",need:500},
+  {id:"party2",name:"Sparkle Hat",icon:"✨",need:750}
+];
 var spawnTimer=0,lastTime=0;
 var soundEnabled=true;
 var catchSound=document.getElementById("catchSound");var goldSound=document.getElementById("goldSound");
@@ -43,6 +56,57 @@ window.addEventListener("resize",resize);
 resize();
 
 function rand(a,b){return a+Math.random()*(b-a)}
+
+
+function renderShop(){
+  var grid=document.getElementById("hatGrid");
+  if(!grid)return;
+  document.getElementById("lifetimeCaught").textContent=lifetimeCaught;
+  grid.innerHTML="";
+  hats.forEach(function(h){
+    var item=document.createElement("div");
+    item.className="hatItem "+(lifetimeCaught>=h.need?"owned":"locked")+(equippedHat===h.id?" equipped":"");
+    var status=h.need===0 ? "Free" : (lifetimeCaught>=h.need ? (equippedHat===h.id?"Equipped":"Unlocked") : h.need+" mice");
+    item.innerHTML='<div class="hatIcon">'+h.icon+'</div><div class="hatName">'+h.name+'</div><div class="hatNeed">'+status+'</div>';
+    var btn=document.createElement("button");
+    btn.type="button";
+    if(h.id==="none"){
+      btn.textContent=equippedHat==="none"?"Equipped":"Use";
+      btn.disabled=equippedHat==="none";
+    }else if(lifetimeCaught<h.need){
+      btn.textContent="Locked";
+      btn.disabled=true;
+    }else{
+      btn.textContent=equippedHat===h.id?"Equipped":"Wear";
+      btn.disabled=equippedHat===h.id;
+    }
+    btn.addEventListener("click",function(){
+      if(lifetimeCaught>=h.need){
+        equippedHat=h.id;
+        localStorage.setItem("MadMiceHat",equippedHat);
+        renderShop();
+      }
+    });
+    item.appendChild(btn);
+    grid.appendChild(item);
+  });
+}
+
+function openShop(){
+  state="shop";
+  menu.classList.add("hidden");
+  hud.classList.add("hidden");
+  pauseScreen.classList.add("hidden");
+  over.classList.add("hidden");
+  document.getElementById("shopScreen").classList.remove("hidden");
+  renderShop();
+}
+
+function closeShop(){
+  state="menu";
+  document.getElementById("shopScreen").classList.add("hidden");
+  menu.classList.remove("hidden");
+}
 
 function updateHud(){
   document.getElementById("score").textContent=score;
@@ -134,6 +198,52 @@ function drawMouse(m){
   ctx.arc(37,-7,10,0,Math.PI*2);
   ctx.fill();
 
+
+  // Equipped tiny hat
+  if(equippedHat !== "none"){
+    ctx.save();
+    ctx.translate(27,-18);
+    if(equippedHat==="party"){
+      ctx.fillStyle="#e58caa";
+      ctx.beginPath();ctx.moveTo(-10,5);ctx.lineTo(0,-22);ctx.lineTo(10,5);ctx.closePath();ctx.fill();
+      ctx.fillStyle="#f7d6df";ctx.beginPath();ctx.arc(0,-22,3,0,Math.PI*2);ctx.fill();
+    }else if(equippedHat==="cowboy"){
+      ctx.fillStyle="#a97745";
+      ctx.beginPath();ctx.ellipse(0,2,19,5,0,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.moveTo(-10,1);ctx.quadraticCurveTo(-7,-18,0,-20);ctx.quadraticCurveTo(8,-18,10,1);ctx.closePath();ctx.fill();
+    }else if(equippedHat==="crown"){
+      ctx.fillStyle="#e3c85e";
+      ctx.beginPath();ctx.moveTo(-12,3);ctx.lineTo(-10,-13);ctx.lineTo(-3,-7);ctx.lineTo(3,-16);ctx.lineTo(8,-7);ctx.lineTo(13,-12);ctx.lineTo(12,3);ctx.closePath();ctx.fill();
+    }else if(equippedHat==="wizard"){
+      ctx.fillStyle="#8170b5";
+      ctx.beginPath();ctx.moveTo(-12,3);ctx.lineTo(0,-27);ctx.lineTo(14,3);ctx.closePath();ctx.fill();
+      ctx.fillStyle="#d8c6ee";ctx.beginPath();ctx.ellipse(0,3,16,4,0,0,Math.PI*2);ctx.fill();
+    }else if(equippedHat==="chef"){
+      ctx.fillStyle="#f0eeee";
+      ctx.beginPath();ctx.ellipse(0,-10,13,10,0,0,Math.PI*2);ctx.fill();
+      ctx.fillRect(-11,-7,22,10);
+    }else if(equippedHat==="tophat"){
+      ctx.fillStyle="#202426";
+      ctx.fillRect(-10,-18,20,19);
+      ctx.beginPath();ctx.ellipse(0,2,17,4,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#9d6e6e";ctx.fillRect(-10,-5,20,4);
+    }else if(equippedHat==="flower"){
+      ctx.fillStyle="#e99aae";
+      for(var petal=0;petal<5;petal++){
+        var aa=petal*Math.PI*2/5;
+        ctx.beginPath();ctx.arc(Math.cos(aa)*7,-13+Math.sin(aa)*7,5,0,Math.PI*2);ctx.fill();
+      }
+      ctx.fillStyle="#f0d16b";ctx.beginPath();ctx.arc(0,-13,4,0,Math.PI*2);ctx.fill();
+    }else if(equippedHat==="party2"){
+      ctx.fillStyle="#9ec7d9";
+      ctx.beginPath();ctx.moveTo(-11,3);ctx.lineTo(0,-24);ctx.lineTo(12,3);ctx.closePath();ctx.fill();
+      ctx.strokeStyle="#f5d28b";ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(-6,-4);ctx.lineTo(5,-11);ctx.stroke();
+      ctx.fillStyle="#f6e6a7";ctx.beginPath();ctx.arc(0,-24,3,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+  }
+
   ctx.fillStyle="#101719";
   ctx.beginPath();
   ctx.arc(36,1,2.5,0,Math.PI*2);
@@ -180,6 +290,8 @@ function catchMouse(m,x,y){
   playCatchSound(m.gold);
   combo++;
   caught++;
+  lifetimeCaught++;
+  localStorage.setItem("MadMiceLifetimeCaught",String(lifetimeCaught));
   score+=m.gold?5:1;
   if(score>best){
     best=score;
@@ -262,6 +374,8 @@ canvas.addEventListener("pointerdown",function(e){
 });
 
 document.getElementById("play").addEventListener("click",function(){startGame("normal")});
+document.getElementById("shop").addEventListener("click",openShop);
+document.getElementById("closeShop").addEventListener("click",closeShop);
 document.getElementById("endless").addEventListener("click",function(){startGame("endless")});
 
 document.getElementById("pause").addEventListener("click",function(){

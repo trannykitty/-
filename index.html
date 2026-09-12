@@ -24,7 +24,24 @@
     <p>A tiny, cozy game about catching wandering mice.<br>There is no rush. Just relax and play.</p>
     <button id="play" type="button">Relax &amp; Play</button>
     <button id="endless" class="soft" type="button">Endless &amp; Chill</button>
+    <button id="shop" class="shopButton" type="button">🧢 Mouse Shop</button>
     <small>Click or tap a mouse</small>
+  </div>
+</div>
+
+
+<div id="shopScreen" class="screen hidden">
+  <div class="card shopCard">
+    <div class="shopTop">
+      <div>
+        <div class="logo">🧢</div>
+        <h2>Mouse Shop</h2>
+        <p class="shopSub">Catch mice to unlock tiny hats.</p>
+      </div>
+      <div class="mouseCount"><b id="lifetimeCaught">0</b><small>mice caught</small></div>
+    </div>
+    <div id="hatGrid" class="hatGrid"></div>
+    <button id="closeShop" class="soft" type="button">Back</button>
   </div>
 </div>
 
