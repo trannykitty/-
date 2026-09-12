@@ -15,14 +15,16 @@ var mice=[],particles=[];
 var score=0,caught=0,combo=0,best=Number(localStorage.getItem("MadMiceBest")||0);
 var spawnTimer=0,lastTime=0;
 var soundEnabled=true;
-var catchSound=document.getElementById("catchSound");
+var catchSound=document.getElementById("catchSound");var goldSound=document.getElementById("goldSound");
 
-function playCatchSound(){
-  if(!soundEnabled||!catchSound)return;
+function playCatchSound(isGold){
+  if(!soundEnabled)return;
   try{
-    catchSound.currentTime=0;
-    catchSound.volume=0.85;
-    var p=catchSound.play();
+    var snd=isGold?goldSound:catchSound;
+    if(!snd)return;
+    snd.currentTime=0;
+    snd.volume=isGold?0.9:0.85;
+    var p=snd.play();
     if(p&&p.catch)p.catch(function(){});
   }catch(e){}
 }
@@ -146,7 +148,7 @@ function drawMouse(m){
 }
 
 function catchMouse(m,x,y){
-  playCatchSound();
+  playCatchSound(m.gold);
   combo++;
   caught++;
   score+=m.gold?5:1;
