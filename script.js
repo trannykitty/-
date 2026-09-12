@@ -144,6 +144,35 @@ function drawMouse(m){
   ctx.arc(44,8,3,0,Math.PI*2);
   ctx.fill();
 
+
+  // Tiny animated feet
+  var footBob = Math.sin(m.phase * 4) * 2;
+  ctx.fillStyle = m.gold ? "#e1c982" : "#b8c1c3";
+
+  ctx.beginPath();
+  ctx.ellipse(-9, 27 + footBob, 7, 3.5, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.ellipse(14, 27 - footBob, 7, 3.5, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Three tiny toes on each foot
+  ctx.strokeStyle = m.gold ? "#a98e49" : "#8e999b";
+  ctx.lineWidth = 1.15;
+
+  for (var toe = -1; toe <= 1; toe++) {
+    ctx.beginPath();
+    ctx.moveTo(-9 + toe * 2, 28 + footBob);
+    ctx.lineTo(-10 + toe * 2, 31 + footBob);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(14 + toe * 2, 28 - footBob);
+    ctx.lineTo(15 + toe * 2, 31 - footBob);
+    ctx.stroke();
+  }
+
   ctx.restore();
 }
 
