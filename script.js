@@ -27,7 +27,7 @@ var upgradeDefs=[
   {id:"magnet",name:"Cozy Magnet",icon:"🧲",desc:"Makes the mouse catch area bigger.",base:12,max:8},
   {id:"slow",name:"Sleepy Mice",icon:"💤",desc:"Makes mice wander more slowly.",base:18,max:7},
   {id:"lucky",name:"Lucky Whiskers",icon:"🍀",desc:"Increases the chance of golden mice.",base:25,max:6},
-  {id:"treats",name:"Treat Pouch",icon:"🍪",desc:"Earns extra treats whenever you catch a mouse.",base:35,max:5},
+  {id:"treats",name:"Treat Pouch",icon:"🧀",desc:"Earns extra treats whenever you catch a mouse.",base:35,max:5},
   {id:"rush",name:"Cozy Rush",icon:"🐾",desc:"Mice arrive a little more often for faster sessions.",base:40,max:5}
 ];
 var hats=[
@@ -42,13 +42,13 @@ var hats=[
   {id:"party2",name:"Sparkle Hat",icon:"✨",need:750}
 ];
 var spawnTimer=0,lastTime=0;
-var soundEnabled=true;
+var soundEnabled=false;
 var bgMusic = document.getElementById("bgMusic");
 
 function startBackgroundMusic(){
   if(!soundEnabled || !bgMusic)return;
   try{
-    bgMusic.volume=0.32;
+    bgMusic.volume=0.12;
     var p=bgMusic.play();
     if(p&&p.catch)p.catch(function(){});
   }catch(e){}
@@ -106,7 +106,7 @@ function renderUpgrades(){
     item.innerHTML='<div class="upgradeIcon">'+d.icon+'</div><div class="upgradeInfo"><div class="upgradeName">'+d.name+'</div><div class="upgradeDesc">'+d.desc+'</div><div class="upgradeLevel">Level '+level+' / '+d.max+'</div></div>';
     var btn=document.createElement("button");
     btn.type="button";
-    btn.textContent=maxed?"MAX":"🍪 "+cost;
+    btn.textContent=maxed?"MAX":"🧀 "+cost;
     btn.disabled=maxed||treats<cost;
     btn.addEventListener("click",function(){
       var price=upgradeCost(d.id);
