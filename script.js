@@ -48,7 +48,7 @@ var bgMusic = document.getElementById("bgMusic");
 function startBackgroundMusic(){
   if(!soundEnabled || !bgMusic)return;
   try{
-    bgMusic.volume=0.12;
+    bgMusic.volume=0.05;
     var p=bgMusic.play();
     if(p&&p.catch)p.catch(function(){});
   }catch(e){}
