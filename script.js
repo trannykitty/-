@@ -43,6 +43,18 @@ var hats=[
 ];
 var spawnTimer=0,lastTime=0;
 var soundEnabled=true;
+var bgMusic = document.getElementById("bgMusic");
+
+function startBackgroundMusic(){
+  if(!soundEnabled || !bgMusic)return;
+  try{
+    bgMusic.volume=0.32;
+    var p=bgMusic.play();
+    if(p&&p.catch)p.catch(function(){});
+  }catch(e){}
+}
+
+
 var catchSound=document.getElementById("catchSound");var goldSound=document.getElementById("goldSound");
 
 function playCatchSound(isGold){
@@ -474,5 +486,12 @@ updateHud();
 document.getElementById("sound").addEventListener("click",function(){
   soundEnabled=!soundEnabled;
   this.textContent=soundEnabled?"🔊":"🔇";
+  if(bgMusic){
+    if(soundEnabled){
+      startBackgroundMusic();
+    }else{
+      try{bgMusic.pause();}catch(e){}
+    }
+  }
 });
 })();
