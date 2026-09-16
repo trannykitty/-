@@ -32,42 +32,25 @@
 
 <div id="shopScreen" class="screen hidden">
   <div class="card shopCard">
-    <div class="shopHeader">
+    <div class="shopTop">
       <div>
-        <div class="shopEyebrow">MOUSE CLOSET</div>
-        <h2>Hat Shop</h2>
-        <p class="shopSub">Catch mice and collect tiny hats.</p>
+        <div class="logo">🧢</div>
+        <h2>Mouse Shop</h2>
+        <p class="shopSub">Catch mice to unlock tiny hats.</p>
       </div>
-      <div class="mouseCount">
-        <span>🐭</span>
-        <b id="lifetimeCaught">0</b>
-        <small>caught</small>
-      </div>
-    </div>
-
-    <div class="preview">
-      <div class="previewGlow"></div>
-      <div class="previewMouse">🐭</div>
-      <div id="previewHat" class="previewHat">🎩</div>
-      <div id="previewName" class="previewName">No Hat</div>
-      <div id="previewStatus" class="previewStatus">Equipped</div>
-    </div>
-
-    <div class="shopProgress">
-      <div class="progressLabels">
-        <span id="progressText">0 / 10 mice</span>
-        <span id="nextHatText">Next unlock</span>
-      </div>
-      <div class="progressTrack"><div id="progressBar"></div></div>
-    </div>
-
-    <div class="shopTitle">
-      <span>HAT COLLECTION</span>
-      <span id="hatCount">0 / 9</span>
+      <div class="mouseCount"><b id="lifetimeCaught">0</b><small>mice caught</small></div>
     </div>
     <div id="hatGrid" class="hatGrid"></div>
-
-    <button id="closeShop" class="soft" type="button">Back to Menu</button>
+    
+    <div class="upgradeHeader">
+      <div>
+        <h3>✨ Upgrades</h3>
+        <p>Spend treats to make your cozy hunt easier.</p>
+      </div>
+      <div class="treatCount">🍪 <b id="treats">0</b></div>
+    </div>
+    <div id="upgradeGrid" class="upgradeGrid"></div>
+<button id="closeShop" class="soft" type="button">Back</button>
   </div>
 </div>
 

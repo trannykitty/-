@@ -14,7 +14,18 @@ var state="menu",mode="normal";
 var mice=[],particles=[];
 var score=0,caught=0,combo=0,best=Number(localStorage.getItem("MadMiceBest")||0);
 var lifetimeCaught=Number(localStorage.getItem("MadMiceLifetimeCaught")||0);
+var treats=Number(localStorage.getItem("MadMiceTreats")||0);
 var equippedHat=localStorage.getItem("MadMiceHat")||"none";
+var upgrades={
+  magnet:Number(localStorage.getItem("MadMiceUpgradeMagnet")||0),
+  slow:Number(localStorage.getItem("MadMiceUpgradeSlow")||0),
+  lucky:Number(localStorage.getItem("MadMiceUpgradeLucky")||0)
+};
+var upgradeDefs=[
+  {id:"magnet",name:"Cozy Magnet",icon:"🧲",desc:"Makes the mouse catch area bigger.",base:12,max:8},
+  {id:"slow",name:"Sleepy Mice",icon:"💤",desc:"Makes mice wander more slowly.",base:18,max:7},
+  {id:"lucky",name:"Lucky Whiskers",icon:"🍀",desc:"Increases the chance of golden mice.",base:25,max:6}
+];
 var hats=[
   {id:"none",name:"No Hat",icon:"🐭",need:0},
   {id:"party",name:"Party Hat",icon:"🥳",need:10},
@@ -58,78 +69,72 @@ resize();
 function rand(a,b){return a+Math.random()*(b-a)}
 
 
-var selectedHat=equippedHat;
+
+function upgradeCost(u){
+  var d=upgradeDefs.find(function(x){return x.id===u;});
+  var level=upgrades[u]||0;
+  return Math.round(d.base*Math.pow(1.65,level));
+}
+
+function renderUpgrades(){
+  var grid=document.getElementById("upgradeGrid");
+  if(!grid)return;
+  document.getElementById("treats").textContent=treats;
+  grid.innerHTML="";
+  upgradeDefs.forEach(function(d){
+    var level=upgrades[d.id]||0;
+    var item=document.createElement("div");
+    item.className="upgradeItem";
+    var cost=upgradeCost(d.id);
+    var maxed=level>=d.max;
+    item.innerHTML='<div class="upgradeIcon">'+d.icon+'</div><div class="upgradeInfo"><div class="upgradeName">'+d.name+'</div><div class="upgradeDesc">'+d.desc+'</div><div class="upgradeLevel">Level '+level+' / '+d.max+'</div></div>';
+    var btn=document.createElement("button");
+    btn.type="button";
+    btn.textContent=maxed?"MAX":"🍪 "+cost;
+    btn.disabled=maxed||treats<cost;
+    btn.addEventListener("click",function(){
+      var price=upgradeCost(d.id);
+      if(upgrades[d.id]>=d.max || treats<price)return;
+      treats-=price;
+      upgrades[d.id]++;
+      localStorage.setItem("MadMiceTreats",String(treats));
+      localStorage.setItem("MadMiceUpgrade"+d.id.charAt(0).toUpperCase()+d.id.slice(1),String(upgrades[d.id]));
+      renderUpgrades();
+    });
+    item.appendChild(btn);
+    grid.appendChild(item);
+  });
+}
 
 function renderShop(){
   var grid=document.getElementById("hatGrid");
   if(!grid)return;
-
   document.getElementById("lifetimeCaught").textContent=lifetimeCaught;
-  document.getElementById("hatCount").textContent=hats.filter(function(h){return lifetimeCaught>=h.need}).length+" / "+hats.length;
-
-  var selected=hats.find(function(h){return h.id===selectedHat})||hats[0];
-  document.getElementById("previewHat").textContent=selected.id==="none"?"":selected.icon;
-  document.getElementById("previewName").textContent=selected.name;
-
-  var selectedUnlocked=lifetimeCaught>=selected.need;
-  document.getElementById("previewStatus").textContent=
-    selected.id==="none"?"Default":
-    (equippedHat===selected.id?"Equipped":
-    (selectedUnlocked?"Unlocked":"Locked"));
-
-  var next=hats.find(function(h){return h.need>lifetimeCaught});
-  var bar=document.getElementById("progressBar");
-  if(next){
-    var previous=0;
-    for(var pi=0;pi<hats.length;pi++){
-      if(hats[pi].need<=lifetimeCaught)previous=Math.max(previous,hats[pi].need);
-    }
-    var pct=((lifetimeCaught-previous)/(next.need-previous))*100;
-    bar.style.width=Math.max(3,Math.min(100,pct))+"%";
-    document.getElementById("progressText").textContent=lifetimeCaught+" / "+next.need+" mice";
-    document.getElementById("nextHatText").textContent="Next: "+next.name;
-  }else{
-    bar.style.width="100%";
-    document.getElementById("progressText").textContent="All hats unlocked!";
-    document.getElementById("nextHatText").textContent="Collection complete";
-  }
-
   grid.innerHTML="";
   hats.forEach(function(h){
-    var unlocked=lifetimeCaught>=h.need;
     var item=document.createElement("div");
-    item.className="hatItem "+(unlocked?"owned":"locked")+(equippedHat===h.id?" equipped":"");
-    item.innerHTML='<div class="hatIcon">'+h.icon+'</div>'+
-      '<div class="hatName">'+h.name+'</div>'+
-      '<div class="hatNeed">'+(h.need===0?"Free":(unlocked?"Unlocked":"🔒 "+h.need+" mice"))+'</div>';
-
+    item.className="hatItem "+(lifetimeCaught>=h.need?"owned":"locked")+(equippedHat===h.id?" equipped":"");
+    var status=h.need===0 ? "Free" : (lifetimeCaught>=h.need ? (equippedHat===h.id?"Equipped":"Unlocked") : h.need+" mice");
+    item.innerHTML='<div class="hatIcon">'+h.icon+'</div><div class="hatName">'+h.name+'</div><div class="hatNeed">'+status+'</div>';
     var btn=document.createElement("button");
     btn.type="button";
-    if(!unlocked){
+    if(h.id==="none"){
+      btn.textContent=equippedHat==="none"?"Equipped":"Use";
+      btn.disabled=equippedHat==="none";
+    }else if(lifetimeCaught<h.need){
       btn.textContent="Locked";
       btn.disabled=true;
-    }else if(equippedHat===h.id){
-      btn.textContent="Wearing";
-      btn.disabled=true;
     }else{
-      btn.textContent="Wear";
+      btn.textContent=equippedHat===h.id?"Equipped":"Wear";
+      btn.disabled=equippedHat===h.id;
     }
-
-    item.addEventListener("click",function(){
-      selectedHat=h.id;
-      renderShop();
-    });
-
-    btn.addEventListener("click",function(e){
-      e.stopPropagation();
-      if(unlocked){
+    btn.addEventListener("click",function(){
+      if(lifetimeCaught>=h.need){
         equippedHat=h.id;
-        selectedHat=h.id;
         localStorage.setItem("MadMiceHat",equippedHat);
         renderShop();
       }
     });
-
     item.appendChild(btn);
     grid.appendChild(item);
   });
@@ -143,6 +148,7 @@ function openShop(){
   over.classList.add("hidden");
   document.getElementById("shopScreen").classList.remove("hidden");
   renderShop();
+  renderUpgrades();
 }
 
 function closeShop(){
@@ -185,7 +191,7 @@ function startGame(selectedMode){
 function spawnMouse(){
   var fromLeft=Math.random()<0.5;
   var level=1+Math.floor(score/15);
-  var speed=55+Math.random()*45+level*2;
+  var speed=(55+Math.random()*45+level*2)*(1-(upgrades.slow||0)*0.08);
   var m={
     x:fromLeft?-70:W+70,
     y:100+Math.random()*Math.max(80,H-190),
@@ -193,7 +199,7 @@ function spawnMouse(){
     phase:Math.random()*Math.PI*2,
     wiggle:5+Math.random()*8,
     size:.9+Math.random()*.18,
-    gold:Math.random()<.08
+    gold:Math.random()<Math.min(.08+(upgrades.lucky||0)*.025,.23)
   };
   mice.push(m);
 }
@@ -335,6 +341,8 @@ function catchMouse(m,x,y){
   caught++;
   lifetimeCaught++;
   localStorage.setItem("MadMiceLifetimeCaught",String(lifetimeCaught));
+  treats+=m.gold?5:2;
+  localStorage.setItem("MadMiceTreats",String(treats));
   score+=m.gold?5:1;
   if(score>best){
     best=score;
@@ -409,7 +417,8 @@ canvas.addEventListener("pointerdown",function(e){
     var m=mice[i];
     var my=m.y+Math.sin(m.phase)*m.wiggle;
     var dx=px-m.x,dy=py-my;
-    if(dx*dx+dy*dy<58*58){
+    var catchRadius=58+(upgrades.magnet||0)*6;
+    if(dx*dx+dy*dy<catchRadius*catchRadius){
       catchMouse(m,px,py);
       return;
     }
