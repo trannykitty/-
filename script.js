@@ -264,47 +264,86 @@ function drawMouse(m){
   ctx.fill();
 
 
-  // Equipped tiny hat
+  // Equipped tiny hat — polished little hand-drawn hats
   if(equippedHat !== "none"){
     ctx.save();
     ctx.translate(27,-18);
+    ctx.lineJoin="round";
+    ctx.lineCap="round";
+
     if(equippedHat==="party"){
-      ctx.fillStyle="#e58caa";
-      ctx.beginPath();ctx.moveTo(-10,5);ctx.lineTo(0,-22);ctx.lineTo(10,5);ctx.closePath();ctx.fill();
-      ctx.fillStyle="#f7d6df";ctx.beginPath();ctx.arc(0,-22,3,0,Math.PI*2);ctx.fill();
+      // Party cone + rim + pom
+      ctx.shadowColor="rgba(0,0,0,.22)";ctx.shadowBlur=3;ctx.shadowOffsetY=2;
+      ctx.fillStyle="#d978a0";
+      ctx.beginPath();ctx.moveTo(-12,5);ctx.quadraticCurveTo(-2,-7,0,-25);ctx.quadraticCurveTo(4,-9,12,5);ctx.closePath();ctx.fill();
+      ctx.shadowColor="transparent";
+      ctx.strokeStyle="#f6c8d8";ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(-7,-3);ctx.lineTo(6,-8);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-4,-11);ctx.lineTo(4,-14);ctx.stroke();
+      ctx.fillStyle="#f7d8e3";ctx.beginPath();ctx.arc(0,-26,4,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#b95f88";ctx.beginPath();ctx.ellipse(0,5,14,3,0,0,Math.PI*2);ctx.fill();
     }else if(equippedHat==="cowboy"){
-      ctx.fillStyle="#a97745";
-      ctx.beginPath();ctx.ellipse(0,2,19,5,0,0,Math.PI*2);ctx.fill();
-      ctx.beginPath();ctx.moveTo(-10,1);ctx.quadraticCurveTo(-7,-18,0,-20);ctx.quadraticCurveTo(8,-18,10,1);ctx.closePath();ctx.fill();
+      // Wide cowboy brim + crown + band
+      ctx.shadowColor="rgba(0,0,0,.2)";ctx.shadowBlur=3;ctx.shadowOffsetY=2;
+      ctx.fillStyle="#a87543";ctx.beginPath();ctx.ellipse(0,3,20,5,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#b9834e";
+      ctx.beginPath();ctx.moveTo(-11,1);ctx.quadraticCurveTo(-10,-14,-4,-19);ctx.quadraticCurveTo(0,-23,4,-19);ctx.quadraticCurveTo(10,-14,11,1);ctx.closePath();ctx.fill();
+      ctx.shadowColor="transparent";ctx.fillStyle="#754b2e";ctx.fillRect(-10,-3,20,4);
+      ctx.fillStyle="#e2bd72";ctx.fillRect(6,-3,3,4);
+      ctx.strokeStyle="#d7a66a";ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-14,3);ctx.quadraticCurveTo(0,7,14,3);ctx.stroke();
     }else if(equippedHat==="crown"){
-      ctx.fillStyle="#e3c85e";
-      ctx.beginPath();ctx.moveTo(-12,3);ctx.lineTo(-10,-13);ctx.lineTo(-3,-7);ctx.lineTo(3,-16);ctx.lineTo(8,-7);ctx.lineTo(13,-12);ctx.lineTo(12,3);ctx.closePath();ctx.fill();
+      // Crown with rounded base and jewels
+      ctx.shadowColor="rgba(0,0,0,.18)";ctx.shadowBlur=3;ctx.shadowOffsetY=2;
+      ctx.fillStyle="#e6c85c";
+      ctx.beginPath();ctx.moveTo(-13,4);ctx.lineTo(-11,-14);ctx.lineTo(-4,-7);ctx.lineTo(0,-18);ctx.lineTo(5,-7);ctx.lineTo(12,-14);ctx.lineTo(13,4);ctx.quadraticCurveTo(0,8,-13,4);ctx.closePath();ctx.fill();
+      ctx.shadowColor="transparent";ctx.fillStyle="#fff0a0";ctx.beginPath();ctx.arc(-7,-9,2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#e99aaa";ctx.beginPath();ctx.arc(0,-9,2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#9fc9df";ctx.beginPath();ctx.arc(7,-9,2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#c6a73b";ctx.fillRect(-12,1,24,4);
     }else if(equippedHat==="wizard"){
-      ctx.fillStyle="#8170b5";
-      ctx.beginPath();ctx.moveTo(-12,3);ctx.lineTo(0,-27);ctx.lineTo(14,3);ctx.closePath();ctx.fill();
-      ctx.fillStyle="#d8c6ee";ctx.beginPath();ctx.ellipse(0,3,16,4,0,0,Math.PI*2);ctx.fill();
+      // Soft floppy wizard hat with moon + stars
+      ctx.shadowColor="rgba(0,0,0,.2)";ctx.shadowBlur=3;ctx.shadowOffsetY=2;
+      ctx.fillStyle="#7162a8";
+      ctx.beginPath();ctx.moveTo(-13,4);ctx.quadraticCurveTo(-7,-2,-4,-12);ctx.quadraticCurveTo(-1,-20,3,-29);ctx.quadraticCurveTo(8,-18,14,4);ctx.closePath();ctx.fill();
+      ctx.shadowColor="transparent";ctx.fillStyle="#9b8cc9";ctx.beginPath();ctx.ellipse(0,4,17,4.5,0,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle="#d9c9f0";ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(3,-15,4,-1.2,1.5);ctx.stroke();
+      ctx.fillStyle="#f3d98b";ctx.beginPath();ctx.arc(-5,-9,1.7,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(7,-4,1.5,0,Math.PI*2);ctx.fill();
     }else if(equippedHat==="chef"){
-      ctx.fillStyle="#f0eeee";
-      ctx.beginPath();ctx.ellipse(0,-10,13,10,0,0,Math.PI*2);ctx.fill();
-      ctx.fillRect(-11,-7,22,10);
+      // Puffy chef toque
+      ctx.shadowColor="rgba(0,0,0,.16)";ctx.shadowBlur=3;ctx.shadowOffsetY=2;
+      ctx.fillStyle="#f4f2ef";
+      ctx.beginPath();ctx.moveTo(-11,2);ctx.lineTo(-11,-8);ctx.arc(-7,-12,6,Math.PI*.15,Math.PI*1.3);ctx.arc(0,-14,7,Math.PI,Math.PI*2);ctx.arc(7,-12,6,Math.PI*1.7,Math.PI*.85);ctx.lineTo(11,2);ctx.closePath();ctx.fill();
+      ctx.shadowColor="transparent";ctx.fillStyle="#d7d5d2";ctx.fillRect(-12,-1,24,6);
+      ctx.fillStyle="#ffffff";ctx.fillRect(-9,-1,18,2);
     }else if(equippedHat==="tophat"){
-      ctx.fillStyle="#202426";
-      ctx.fillRect(-10,-18,20,19);
-      ctx.beginPath();ctx.ellipse(0,2,17,4,0,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle="#9d6e6e";ctx.fillRect(-10,-5,20,4);
+      // Tall top hat, kept classic
+      ctx.shadowColor="rgba(0,0,0,.24)";ctx.shadowBlur=3;ctx.shadowOffsetY=2;
+      ctx.fillStyle="#1b2025";ctx.fillRect(-10,-23,20,25);
+      ctx.beginPath();ctx.ellipse(0,3,18,4.5,0,0,Math.PI*2);ctx.fill();
+      ctx.shadowColor="transparent";ctx.fillStyle="#8f5f72";ctx.fillRect(-10,-7,20,5);
+      ctx.fillStyle="#b97a8f";ctx.fillRect(-2,-7,3,5);
     }else if(equippedHat==="flower"){
-      ctx.fillStyle="#e99aae";
-      for(var petal=0;petal<5;petal++){
-        var aa=petal*Math.PI*2/5;
-        ctx.beginPath();ctx.arc(Math.cos(aa)*7,-13+Math.sin(aa)*7,5,0,Math.PI*2);ctx.fill();
+      // Flower crown
+      ctx.shadowColor="rgba(0,0,0,.15)";ctx.shadowBlur=2;ctx.shadowOffsetY=2;
+      var flowerXs=[-9,0,9];
+      for(var fi=0;fi<flowerXs.length;fi++){
+        var fx=flowerXs[fi], fy=-12-(fi===1?3:0);
+        ctx.fillStyle=fi===1?"#df7892":"#ee9fb0";
+        for(var fp=0;fp<5;fp++){
+          var fa=fp*Math.PI*2/5;
+          ctx.beginPath();ctx.arc(fx+Math.cos(fa)*4.5,fy+Math.sin(fa)*4.5,3.7,0,Math.PI*2);ctx.fill();
+        }
+        ctx.fillStyle="#f1cf69";ctx.beginPath();ctx.arc(fx,fy,2.6,0,Math.PI*2);ctx.fill();
       }
-      ctx.fillStyle="#f0d16b";ctx.beginPath();ctx.arc(0,-13,4,0,Math.PI*2);ctx.fill();
+      ctx.shadowColor="transparent";ctx.strokeStyle="#75a26e";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-13,1);ctx.quadraticCurveTo(0,5,13,1);ctx.stroke();
     }else if(equippedHat==="party2"){
-      ctx.fillStyle="#9ec7d9";
-      ctx.beginPath();ctx.moveTo(-11,3);ctx.lineTo(0,-24);ctx.lineTo(12,3);ctx.closePath();ctx.fill();
-      ctx.strokeStyle="#f5d28b";ctx.lineWidth=2;
-      ctx.beginPath();ctx.moveTo(-6,-4);ctx.lineTo(5,-11);ctx.stroke();
-      ctx.fillStyle="#f6e6a7";ctx.beginPath();ctx.arc(0,-24,3,0,Math.PI*2);ctx.fill();
+      // Sparkle cone with glossy trim
+      ctx.shadowColor="rgba(0,0,0,.2)";ctx.shadowBlur=3;ctx.shadowOffsetY=2;
+      ctx.fillStyle="#7eb5cf";ctx.beginPath();ctx.moveTo(-12,4);ctx.lineTo(0,-26);ctx.lineTo(13,4);ctx.closePath();ctx.fill();
+      ctx.shadowColor="transparent";ctx.strokeStyle="#f8d68c";ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(-8,-3);ctx.lineTo(7,-11);ctx.stroke();
+      ctx.fillStyle="#f8e8a8";ctx.beginPath();ctx.arc(0,-27,4,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#f6d37b";ctx.beginPath();ctx.arc(-4,-9,1.8,0,Math.PI*2);ctx.fill();ctx.fillStyle="#f3a6c0";ctx.beginPath();ctx.arc(6,-4,1.8,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle="#ffffff";ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(0,-12);ctx.moveTo(-3,-15);ctx.lineTo(3,-15);ctx.stroke();
     }
     ctx.restore();
   }
