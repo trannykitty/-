@@ -84,12 +84,16 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 #sound { margin-left: 0; }
 
 .shopButton{display:block;margin:10px auto 0;background:rgba(255,255,255,.11)!important;color:#e9eff0!important;border:1px solid rgba(255,255,255,.12)}
-.shopCard{width:min(94vw,620px);max-height:88vh;overflow:auto;text-align:left}
+.shopCard{width:min(94vw,900px);max-height:88vh;overflow:auto;text-align:left}
 .shopTop{display:flex;justify-content:space-between;align-items:center;gap:18px}
 .shopTop h2{margin:2px 0 3px}.shopSub{margin:0;font-size:14px}
 .mouseCount{min-width:95px;text-align:center;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:15px;background:rgba(255,255,255,.06)}
 .mouseCount b{display:block;font-size:23px}.mouseCount small{margin:1px 0 0;font-size:8px}
-.hatGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+.shopColumns{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.shopSection{min-width:0;padding:14px;border:1px solid rgba(255,255,255,.1);border-radius:20px;background:rgba(255,255,255,.035);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.sectionTitle h3{margin:0;font-size:18px}.sectionTitle span{font-size:9px;color:#9eabad}
+.hatGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0}
 .hatItem{padding:15px 10px;border-radius:17px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.045);text-align:center}
 .hatIcon{font-size:34px;height:45px}.hatName{font-weight:850;font-size:13px}.hatNeed{font-size:10px;color:#9eabad;margin:3px 0 9px}
 .hatItem button{font-size:11px;padding:8px 11px;margin:0;width:100%;border-radius:10px}
@@ -99,10 +103,10 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 #closeShop{display:block;margin:0 auto}
 @media(max-width:560px){.hatGrid{grid-template-columns:repeat(2,1fr)}.shopTop{align-items:flex-start}.mouseCount{min-width:82px}}
 
-.upgradeHeader{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.09)}
+.upgradeHeader{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:0 0 10px;padding:0;border:0}
 .upgradeHeader h3{margin:0;font-size:21px}.upgradeHeader p{margin:3px 0 0;font-size:12px;color:#9eabad}
 .treatCount{padding:8px 12px;border-radius:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);white-space:nowrap}
-.upgradeGrid{display:grid;grid-template-columns:1fr;gap:9px;margin:12px 0 18px}
+.upgradeGrid{display:grid;grid-template-columns:1fr;gap:9px;margin:0 0 4px}
 .upgradeItem{display:flex;align-items:center;gap:12px;padding:12px;border-radius:15px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.045)}
 .upgradeIcon{font-size:27px;width:40px;text-align:center}.upgradeInfo{flex:1}.upgradeName{font-size:13px;font-weight:850}.upgradeDesc{font-size:10px;color:#9eabad;margin-top:2px}.upgradeLevel{font-size:9px;color:#cdd7d8;margin-top:3px}
 .upgradeItem button{font-size:10px;padding:9px 12px;margin:0;min-width:76px}.upgradeItem button:disabled{opacity:.45;cursor:default}
@@ -112,3 +116,6 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 .upgradeHeader p{display:block!important;margin:3px 0 0!important;color:#aebabc!important;font-size:12px!important}
 .upgradeGrid{display:grid!important;grid-template-columns:1fr!important;gap:9px!important;margin:12px 0 18px!important}
 .upgradeItem{display:flex!important;visibility:visible!important;opacity:1!important}
+
+@media(max-width:760px){.shopColumns{grid-template-columns:1fr}.hatGrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.hatGrid{grid-template-columns:repeat(2,1fr)}}
