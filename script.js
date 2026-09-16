@@ -58,35 +58,78 @@ resize();
 function rand(a,b){return a+Math.random()*(b-a)}
 
 
+var selectedHat=equippedHat;
+
 function renderShop(){
   var grid=document.getElementById("hatGrid");
   if(!grid)return;
+
   document.getElementById("lifetimeCaught").textContent=lifetimeCaught;
+  document.getElementById("hatCount").textContent=hats.filter(function(h){return lifetimeCaught>=h.need}).length+" / "+hats.length;
+
+  var selected=hats.find(function(h){return h.id===selectedHat})||hats[0];
+  document.getElementById("previewHat").textContent=selected.id==="none"?"":selected.icon;
+  document.getElementById("previewName").textContent=selected.name;
+
+  var selectedUnlocked=lifetimeCaught>=selected.need;
+  document.getElementById("previewStatus").textContent=
+    selected.id==="none"?"Default":
+    (equippedHat===selected.id?"Equipped":
+    (selectedUnlocked?"Unlocked":"Locked"));
+
+  var next=hats.find(function(h){return h.need>lifetimeCaught});
+  var bar=document.getElementById("progressBar");
+  if(next){
+    var previous=0;
+    for(var pi=0;pi<hats.length;pi++){
+      if(hats[pi].need<=lifetimeCaught)previous=Math.max(previous,hats[pi].need);
+    }
+    var pct=((lifetimeCaught-previous)/(next.need-previous))*100;
+    bar.style.width=Math.max(3,Math.min(100,pct))+"%";
+    document.getElementById("progressText").textContent=lifetimeCaught+" / "+next.need+" mice";
+    document.getElementById("nextHatText").textContent="Next: "+next.name;
+  }else{
+    bar.style.width="100%";
+    document.getElementById("progressText").textContent="All hats unlocked!";
+    document.getElementById("nextHatText").textContent="Collection complete";
+  }
+
   grid.innerHTML="";
   hats.forEach(function(h){
+    var unlocked=lifetimeCaught>=h.need;
     var item=document.createElement("div");
-    item.className="hatItem "+(lifetimeCaught>=h.need?"owned":"locked")+(equippedHat===h.id?" equipped":"");
-    var status=h.need===0 ? "Free" : (lifetimeCaught>=h.need ? (equippedHat===h.id?"Equipped":"Unlocked") : h.need+" mice");
-    item.innerHTML='<div class="hatIcon">'+h.icon+'</div><div class="hatName">'+h.name+'</div><div class="hatNeed">'+status+'</div>';
+    item.className="hatItem "+(unlocked?"owned":"locked")+(equippedHat===h.id?" equipped":"");
+    item.innerHTML='<div class="hatIcon">'+h.icon+'</div>'+
+      '<div class="hatName">'+h.name+'</div>'+
+      '<div class="hatNeed">'+(h.need===0?"Free":(unlocked?"Unlocked":"🔒 "+h.need+" mice"))+'</div>';
+
     var btn=document.createElement("button");
     btn.type="button";
-    if(h.id==="none"){
-      btn.textContent=equippedHat==="none"?"Equipped":"Use";
-      btn.disabled=equippedHat==="none";
-    }else if(lifetimeCaught<h.need){
+    if(!unlocked){
       btn.textContent="Locked";
       btn.disabled=true;
+    }else if(equippedHat===h.id){
+      btn.textContent="Wearing";
+      btn.disabled=true;
     }else{
-      btn.textContent=equippedHat===h.id?"Equipped":"Wear";
-      btn.disabled=equippedHat===h.id;
+      btn.textContent="Wear";
     }
-    btn.addEventListener("click",function(){
-      if(lifetimeCaught>=h.need){
+
+    item.addEventListener("click",function(){
+      selectedHat=h.id;
+      renderShop();
+    });
+
+    btn.addEventListener("click",function(e){
+      e.stopPropagation();
+      if(unlocked){
         equippedHat=h.id;
+        selectedHat=h.id;
         localStorage.setItem("MadMiceHat",equippedHat);
         renderShop();
       }
     });
+
     item.appendChild(btn);
     grid.appendChild(item);
   });
