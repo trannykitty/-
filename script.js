@@ -19,12 +19,16 @@ var equippedHat=localStorage.getItem("MadMiceHat")||"none";
 var upgrades={
   magnet:Number(localStorage.getItem("MadMiceUpgradeMagnet")||0),
   slow:Number(localStorage.getItem("MadMiceUpgradeSlow")||0),
-  lucky:Number(localStorage.getItem("MadMiceUpgradeLucky")||0)
+  lucky:Number(localStorage.getItem("MadMiceUpgradeLucky")||0),
+  treats:Number(localStorage.getItem("MadMiceUpgradeTreats")||0),
+  rush:Number(localStorage.getItem("MadMiceUpgradeRush")||0)
 };
 var upgradeDefs=[
   {id:"magnet",name:"Cozy Magnet",icon:"🧲",desc:"Makes the mouse catch area bigger.",base:12,max:8},
   {id:"slow",name:"Sleepy Mice",icon:"💤",desc:"Makes mice wander more slowly.",base:18,max:7},
-  {id:"lucky",name:"Lucky Whiskers",icon:"🍀",desc:"Increases the chance of golden mice.",base:25,max:6}
+  {id:"lucky",name:"Lucky Whiskers",icon:"🍀",desc:"Increases the chance of golden mice.",base:25,max:6},
+  {id:"treats",name:"Treat Pouch",icon:"🍪",desc:"Earns extra treats whenever you catch a mouse.",base:35,max:5},
+  {id:"rush",name:"Cozy Rush",icon:"🐾",desc:"Mice arrive a little more often for faster sessions.",base:40,max:5}
 ];
 var hats=[
   {id:"none",name:"No Hat",icon:"🐭",need:0},
@@ -341,7 +345,7 @@ function catchMouse(m,x,y){
   caught++;
   lifetimeCaught++;
   localStorage.setItem("MadMiceLifetimeCaught",String(lifetimeCaught));
-  treats+=m.gold?5:2;
+  treats+=(m.gold?5:2)+(upgrades.treats||0);
   localStorage.setItem("MadMiceTreats",String(treats));
   score+=m.gold?5:1;
   if(score>best){
@@ -364,7 +368,7 @@ function gameLoop(now){
   spawnTimer+=dt;
 
   var level=1+Math.floor(score/15);
-  var interval=Math.max(.72,1.25-level*.025);
+  var interval=Math.max(.55,(1.25-level*.025)*(1-(upgrades.rush||0)*0.06));
 
   if(spawnTimer>=interval){
     spawnTimer=0;
