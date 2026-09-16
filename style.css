@@ -100,7 +100,7 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 .hatItem.owned{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.075)}
 .hatItem.equipped{box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
 .hatItem.locked{opacity:.68}.hatItem button:disabled{opacity:.55;cursor:default}
-#closeShop{display:block;margin:0 auto}
+#closeShop{display:block;margin:20px auto 0}
 @media(max-width:560px){.hatGrid{grid-template-columns:repeat(2,1fr)}.shopTop{align-items:flex-start}.mouseCount{min-width:82px}}
 
 .upgradeHeader{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:0 0 10px;padding:0;border:0}
