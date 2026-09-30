@@ -42,7 +42,7 @@ var hats=[
   {id:"party2",name:"Sparkle Hat",icon:"✨",need:750}
 ];
 var spawnTimer=0,lastTime=0;
-var soundEnabled=false;
+var soundEnabled=true;
 var bgMusic = document.getElementById("bgMusic");
 
 function startBackgroundMusic(){
