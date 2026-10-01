@@ -13,6 +13,7 @@ var W=window.innerWidth,H=window.innerHeight,dpr=1;
 var state="menu",mode="normal";
 var mice=[],particles=[];
 var score=0,caught=0,combo=0,best=Number(localStorage.getItem("MadMiceBest")||0);
+var lives=4;
 var lifetimeCaught=Number(localStorage.getItem("MadMiceLifetimeCaught")||0);
 var treats=Number(localStorage.getItem("MadMiceTreats")||0);
 var equippedHat=localStorage.getItem("MadMiceHat")||"none";
@@ -177,6 +178,13 @@ function updateHud(){
   document.getElementById("score").textContent=score;
   document.getElementById("combo").textContent="x"+Math.max(1,combo);
   document.getElementById("best").textContent=best;
+  var livesBox=document.getElementById("livesBox");
+  if(mode==="normal"){
+    livesBox.classList.remove("hidden");
+    document.getElementById("lives").textContent=lives;
+  }else{
+    livesBox.classList.add("hidden");
+  }
 }
 
 function startGame(selectedMode){
@@ -185,6 +193,7 @@ function startGame(selectedMode){
   score=0;
   caught=0;
   combo=0;
+  lives=4;
   spawnTimer=999;
   mice=[];
   particles=[];
@@ -439,6 +448,22 @@ function gameLoop(now){
     if(m.x<-90||m.x>W+90){
       mice=mice.filter(function(q){return q!==m});
       combo=0;
+
+      if(mode==="normal"){
+        lives=Math.max(0,lives-1);
+        updateHud();
+        if(lives===0){
+          state="over";
+          document.getElementById("finalScore").textContent=score;
+          document.getElementById("finalCaught").textContent=caught;
+          document.querySelector("#over h2").textContent="Out of lives";
+          over.classList.remove("hidden");
+          hud.classList.add("hidden");
+          mice=[];
+          return;
+        }
+      }
+
       updateHud();
     }
   }

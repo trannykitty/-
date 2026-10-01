@@ -64,6 +64,10 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
   text-transform: uppercase;
 }
 
+
+#livesBox b{font-size:16px;line-height:18px}
+#livesBox{min-width:58px}
+
 #sound,
 #pause {
   pointer-events: auto;
