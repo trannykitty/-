@@ -2,10 +2,12 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="2026.10.09.1";
+var BUILD_VERSION="2026.10.09.5";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
+var candidateUpdateVersion="";
+var candidateUpdateTimer=null;
 
 var canvas=document.getElementById("game");
 var ctx=canvas.getContext("2d");
@@ -629,22 +631,49 @@ function maybeShowUpdateNotice(){
   notice.classList.remove("hidden");
 }
 
+function compareVersions(a,b){
+  // Compare numeric dot-separated versions; invalid values never trigger an update.
+  if(!/^\d+(?:\.\d+)*$/.test(a) || !/^\d+(?:\.\d+)*$/.test(b))return 0;
+  var aa=a.split("."),bb=b.split("."),len=Math.max(aa.length,bb.length);
+  for(var i=0;i<len;i++){
+    var av=Number(aa[i]||0),bv=Number(bb[i]||0);
+    if(av>bv)return 1;
+    if(av<bv)return -1;
+  }
+  return 0;
+}
+
 function checkForGameUpdate(){
   if(!window.fetch)return;
-  fetch("./version.json?check="+Date.now(),{cache:"no-store"})
+  fetch("./version.json?check="+Date.now(),{cache:"no-store",headers:{"Cache-Control":"no-cache"}})
     .then(function(response){
       if(!response.ok)throw new Error("Version check unavailable");
       return response.json();
     })
     .then(function(manifest){
-      var publishedVersion=String(manifest && manifest.version || "");
-      if(publishedVersion && publishedVersion!==BUILD_VERSION){
+      var publishedVersion=String(manifest && manifest.version || "").trim();
+      // Older/equal, missing, or malformed manifests should never show an update prompt.
+      if(!publishedVersion || compareVersions(publishedVersion,BUILD_VERSION)<=0){
+        candidateUpdateVersion="";
+        if(candidateUpdateTimer){clearTimeout(candidateUpdateTimer);candidateUpdateTimer=null;}
+        return;
+      }
+      // Confirm the same newer version with a second fresh request. This avoids transient
+      // GitHub Pages deployment/CDN mismatches from causing false alarms.
+      if(candidateUpdateVersion===publishedVersion){
         updatePending=true;
         maybeShowUpdateNotice();
+        return;
       }
+      candidateUpdateVersion=publishedVersion;
+      if(candidateUpdateTimer)clearTimeout(candidateUpdateTimer);
+      candidateUpdateTimer=setTimeout(function(){
+        candidateUpdateTimer=null;
+        checkForGameUpdate();
+      },5000);
     })
     .catch(function(){
-      // Checking for updates is optional; a temporary/offline failure should not interrupt play.
+      // Network errors and partial deployments are not evidence of an update.
     });
 }
 
