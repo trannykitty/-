@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="2026.10.09.1";
+var BUILD_VERSION="2026.10.09.2";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
@@ -258,27 +258,98 @@ function drawMouse(m){
   ctx.translate(m.x,y);
   ctx.scale(m.vx<0?-m.size:m.size,m.size);
 
-  ctx.strokeStyle=m.gold?"#e4c97c":"#aeb7b8";
-  ctx.lineWidth=4;
+  // Soft, curved tail with a little highlight.
+  ctx.lineCap="round";
+  var tailGrad=ctx.createLinearGradient(-43,0,-8,0);
+  if(m.gold){tailGrad.addColorStop(0,"#ba9149");tailGrad.addColorStop(1,"#f0d993");}
+  else{tailGrad.addColorStop(0,"#8f9c9f");tailGrad.addColorStop(1,"#cbd3d5");}
+  ctx.strokeStyle=tailGrad;
+  ctx.lineWidth=3.4;
   ctx.beginPath();
   ctx.arc(-27,7,19,.4,4.8);
   ctx.stroke();
+  ctx.strokeStyle="rgba(255,255,255,.28)";
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.arc(-27,6.5,19,.7,1.9);
+  ctx.stroke();
 
-  ctx.fillStyle=m.gold?"#cbb574":"#aab3b5";
+  // Rounded body with gentle top-to-bottom shading.
+  var bodyGrad=ctx.createLinearGradient(0,-11,1,29);
+  if(m.gold){
+    bodyGrad.addColorStop(0,"#f7e6ad");
+    bodyGrad.addColorStop(.48,"#dfc47c");
+    bodyGrad.addColorStop(1,"#bd9851");
+  }else{
+    bodyGrad.addColorStop(0,"#e8edef");
+    bodyGrad.addColorStop(.48,"#c4cdd0");
+    bodyGrad.addColorStop(1,"#9eabad");
+  }
+  ctx.fillStyle=bodyGrad;
   ctx.beginPath();
   ctx.ellipse(0,8,29,19,0,0,Math.PI*2);
   ctx.fill();
+  ctx.strokeStyle=m.gold?"rgba(140,105,47,.45)":"rgba(107,122,125,.48)";
+  ctx.lineWidth=1.15;
+  ctx.stroke();
 
-  ctx.fillStyle=m.gold?"#dcc886":"#bdc5c7";
+  // A soft belly glow gives the body a little more dimension.
+  ctx.save();
+  ctx.globalAlpha=.3;
+  ctx.fillStyle=m.gold?"#fff2c1":"#f6f8f8";
+  ctx.beginPath();
+  ctx.ellipse(-2,14,17,8,-.08,0,Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+
+  // Ears sit behind the face, with rosy inner ears.
+  var earGrad=ctx.createLinearGradient(20,-21,40,-1);
+  if(m.gold){earGrad.addColorStop(0,"#f4dda0");earGrad.addColorStop(1,"#c6a45d");}
+  else{earGrad.addColorStop(0,"#e4e9ea");earGrad.addColorStop(1,"#aeb9bb");}
+  ctx.fillStyle=earGrad;
+  ctx.beginPath();
+  ctx.ellipse(24,-9,10.5,12,-.28,0,Math.PI*2);
+  ctx.ellipse(37,-7,9.5,11,.2,0,Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle=m.gold?"rgba(150,111,48,.45)":"rgba(103,119,122,.45)";
+  ctx.lineWidth=1;
+  ctx.stroke();
+  ctx.fillStyle=m.gold?"#d9989d":"#d99aa7";
+  ctx.beginPath();
+  ctx.ellipse(24,-8,5.2,7,-.28,0,Math.PI*2);
+  ctx.ellipse(37,-6,4.7,6,.2,0,Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle="rgba(255,240,241,.46)";
+  ctx.beginPath();
+  ctx.ellipse(22.8,-10,1.7,3,-.28,0,Math.PI*2);
+  ctx.ellipse(35.8,-8,1.5,2.6,.2,0,Math.PI*2);
+  ctx.fill();
+
+  // Round face with a brighter forehead and softly outlined cheeks.
+  var faceGrad=ctx.createRadialGradient(23,-5,2,29,7,21);
+  if(m.gold){
+    faceGrad.addColorStop(0,"#fff0bd");
+    faceGrad.addColorStop(.58,"#e6cc86");
+    faceGrad.addColorStop(1,"#c5a35d");
+  }else{
+    faceGrad.addColorStop(0,"#f1f4f4");
+    faceGrad.addColorStop(.58,"#cbd4d6");
+    faceGrad.addColorStop(1,"#a6b2b4");
+  }
+  ctx.fillStyle=faceGrad;
   ctx.beginPath();
   ctx.arc(28,5,17,0,Math.PI*2);
   ctx.fill();
-
+  ctx.strokeStyle=m.gold?"rgba(143,106,45,.42)":"rgba(105,120,123,.48)";
+  ctx.lineWidth=1.15;
+  ctx.stroke();
+  ctx.save();
+  ctx.globalAlpha=.35;
+  ctx.fillStyle="#ffffff";
   ctx.beginPath();
-  ctx.arc(25,-9,11,0,Math.PI*2);
-  ctx.arc(37,-7,10,0,Math.PI*2);
+  ctx.ellipse(23,-1,5,8,-.38,0,Math.PI*2);
   ctx.fill();
-
+  ctx.restore();
 
   // Equipped tiny hat — polished little hand-drawn hats
   if(equippedHat !== "none"){
@@ -364,16 +435,57 @@ function drawMouse(m){
     ctx.restore();
   }
 
-  ctx.fillStyle="#101719";
+  // Bright little eye with a catchlight.
+  ctx.fillStyle="rgba(64,75,77,.24)";
   ctx.beginPath();
-  ctx.arc(36,1,2.5,0,Math.PI*2);
+  ctx.arc(36,1.5,3.1,0,Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle="#172124";
+  ctx.beginPath();
+  ctx.arc(36,1,2.35,0,Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle="#ffffff";
+  ctx.beginPath();
+  ctx.arc(36.7,.15,.78,0,Math.PI*2);
   ctx.fill();
 
-  ctx.fillStyle="#e7a1ab";
+  // Blushy cheek, tiny smile, and fine whiskers.
+  ctx.save();
+  ctx.globalAlpha=.58;
+  ctx.fillStyle=m.gold?"#e79aa0":"#e99eae";
   ctx.beginPath();
-  ctx.arc(44,8,3,0,Math.PI*2);
+  ctx.ellipse(39.2,8.8,3.5,2.1,.1,0,Math.PI*2);
   ctx.fill();
+  ctx.restore();
 
+  ctx.strokeStyle=m.gold?"rgba(132,98,54,.68)":"rgba(107,120,124,.72)";
+  ctx.lineWidth=.9;
+  ctx.lineCap="round";
+  ctx.beginPath();
+  ctx.moveTo(40,8.5);ctx.quadraticCurveTo(45,3.8,50,4.2);
+  ctx.moveTo(41,9.2);ctx.quadraticCurveTo(46,8.5,51,9.7);
+  ctx.moveTo(40,10);ctx.quadraticCurveTo(45,12.5,49,14.2);
+  ctx.stroke();
+
+  ctx.strokeStyle=m.gold?"rgba(127,87,54,.85)":"rgba(96,105,108,.85)";
+  ctx.lineWidth=.9;
+  ctx.beginPath();
+  ctx.moveTo(41,11);ctx.quadraticCurveTo(41.5,13,39.5,13.4);
+  ctx.stroke();
+
+  // A small rounded pink nose sits on the tip of the snout.
+  ctx.fillStyle=m.gold?"#d88b8d":"#df91a1";
+  ctx.beginPath();
+  ctx.moveTo(43,6.2);
+  ctx.quadraticCurveTo(46.5,6.5,46.2,8.7);
+  ctx.quadraticCurveTo(44.8,11,42.7,8.5);
+  ctx.quadraticCurveTo(42.2,7.2,43,6.2);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle="rgba(255,235,237,.72)";
+  ctx.beginPath();
+  ctx.ellipse(43.7,7.1,.9,.55,-.3,0,Math.PI*2);
+  ctx.fill();
 
   // Tiny animated feet
   var footBob = Math.sin(m.phase * 4) * 2;
