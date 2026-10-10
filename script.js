@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="2026.10.09.3";
+var BUILD_VERSION="2026.10.09.1";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
@@ -258,75 +258,27 @@ function drawMouse(m){
   ctx.translate(m.x,y);
   ctx.scale(m.vx<0?-m.size:m.size,m.size);
 
-  // A simple, soft cartoon tail.
-  var fur=m.gold?"#e8c56f":"#d7e0e1";
-  var furEdge=m.gold?"#bd9143":"#9eafb1";
-  var innerEar=m.gold?"#e9a0a6":"#e8a1b2";
-  var paw=m.gold?"#cda250":"#b8c8ca";
-  ctx.lineCap="round";
-  ctx.strokeStyle=furEdge;
-  ctx.lineWidth=3.5;
+  ctx.strokeStyle=m.gold?"#e4c97c":"#aeb7b8";
+  ctx.lineWidth=4;
   ctx.beginPath();
-  ctx.moveTo(-20,12);
-  ctx.bezierCurveTo(-42,13,-40,-8,-27,-10);
-  ctx.stroke();
-  ctx.strokeStyle=m.gold?"#f6df9c":"#edf2f2";
-  ctx.lineWidth=1.2;
-  ctx.beginPath();
-  ctx.moveTo(-28,-7);
-  ctx.bezierCurveTo(-36,-5,-37,5,-31,8);
+  ctx.arc(-27,7,19,.4,4.8);
   ctx.stroke();
 
-  // Tiny feet peeking out under the body.
-  ctx.fillStyle=paw;
+  ctx.fillStyle=m.gold?"#cbb574":"#aab3b5";
   ctx.beginPath();
-  ctx.ellipse(-8,24,6.5,3.2,-.15,0,Math.PI*2);
-  ctx.ellipse(12,24,6.5,3.2,.15,0,Math.PI*2);
-  ctx.fill();
-  ctx.fillStyle=m.gold?"#a97e36":"#91a5a7";
-  for(var ti=-1;ti<=1;ti++){
-    ctx.beginPath();ctx.arc(-9+ti*2.3,25.4,0.65,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();ctx.arc(11+ti*2.3,25.4,0.65,0,Math.PI*2);ctx.fill();
-  }
-
-  // Rounded body: flat color, gentle outline, no metallic-looking shine.
-  ctx.fillStyle=fur;
-  ctx.strokeStyle=furEdge;
-  ctx.lineWidth=1.4;
-  ctx.beginPath();
-  ctx.ellipse(0,8,27,16.5,0,0,Math.PI*2);
-  ctx.fill();ctx.stroke();
-
-  // Small pastel tummy patch.
-  ctx.fillStyle=m.gold?"#f4dfa0":"#eaf0f0";
-  ctx.beginPath();
-  ctx.ellipse(2,14,13,6.5,-.08,0,Math.PI*2);
+  ctx.ellipse(0,8,29,19,0,0,Math.PI*2);
   ctx.fill();
 
-  // Round ears behind the head.
-  ctx.fillStyle=furEdge;
+  ctx.fillStyle=m.gold?"#dcc886":"#bdc5c7";
   ctx.beginPath();
-  ctx.arc(17,-8,8.1,0,Math.PI*2);
-  ctx.arc(29,-9,8.1,0,Math.PI*2);
-  ctx.fill();
-  ctx.fillStyle=innerEar;
-  ctx.beginPath();
-  ctx.arc(17,-8,5.2,0,Math.PI*2);
-  ctx.arc(29,-9,5.2,0,Math.PI*2);
-  ctx.fill();
-  ctx.fillStyle=m.gold?"#f7d9a0":"#e5e9e9";
-  ctx.beginPath();
-  ctx.ellipse(15,-11,2,2.7,-.5,0,Math.PI*2);
-  ctx.ellipse(27,-12,2,2.7,-.5,0,Math.PI*2);
+  ctx.arc(28,5,17,0,Math.PI*2);
   ctx.fill();
 
-  // Big round head with a clean cartoon silhouette.
-  ctx.fillStyle=fur;
-  ctx.strokeStyle=furEdge;
-  ctx.lineWidth=1.4;
   ctx.beginPath();
-  ctx.arc(25,4,16.2,0,Math.PI*2);
-  ctx.fill();ctx.stroke();
+  ctx.arc(25,-9,11,0,Math.PI*2);
+  ctx.arc(37,-7,10,0,Math.PI*2);
+  ctx.fill();
+
 
   // Equipped tiny hat — polished little hand-drawn hats
   if(equippedHat !== "none"){
@@ -412,38 +364,44 @@ function drawMouse(m){
     ctx.restore();
   }
 
-  // One big, friendly eye with a crisp catchlight.
-  ctx.fillStyle="#fffdf7";
-  ctx.beginPath();ctx.arc(31.9,0.4,4.3,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#283336";
-  ctx.beginPath();ctx.arc(33.1,0.8,2.65,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#ffffff";
-  ctx.beginPath();ctx.arc(33.9,-0.2,1.05,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#101719";
+  ctx.beginPath();
+  ctx.arc(36,1,2.5,0,Math.PI*2);
+  ctx.fill();
 
-  // Blush and a little nose make the face feel friendly, not realistic.
-  ctx.fillStyle=m.gold?"#e9a0a0":"#eda5b6";
-  ctx.beginPath();ctx.ellipse(36,7.1,3.5,2.2,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle=m.gold?"#dc8796":"#e78ea5";
+  ctx.fillStyle="#e7a1ab";
   ctx.beginPath();
-  ctx.moveTo(40.4,5.8);
-  ctx.quadraticCurveTo(44.5,5.4,44.4,8);
-  ctx.quadraticCurveTo(42.4,10.3,40.4,7.8);
-  ctx.closePath();ctx.fill();
+  ctx.arc(44,8,3,0,Math.PI*2);
+  ctx.fill();
 
-  // Tiny whiskers with rounded ends.
-  ctx.strokeStyle=m.gold?"rgba(146,111,54,.78)":"rgba(111,132,134,.82)";
-  ctx.lineWidth=.85;
-  ctx.lineCap="round";
+
+  // Tiny animated feet
+  var footBob = Math.sin(m.phase * 4) * 2;
+  ctx.fillStyle = m.gold ? "#e1c982" : "#b8c1c3";
+
   ctx.beginPath();
-  ctx.moveTo(39,7);ctx.quadraticCurveTo(44,3.5,48,3.4);
-  ctx.moveTo(40,8.5);ctx.quadraticCurveTo(45,8.1,49,9);
-  ctx.moveTo(39,9.5);ctx.quadraticCurveTo(43,12.2,46.5,13.4);
-  ctx.stroke();
-  ctx.strokeStyle=m.gold?"#a57b43":"#8d9fa1";
-  ctx.lineWidth=1.05;
+  ctx.ellipse(-9, 27 + footBob, 7, 3.5, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+
   ctx.beginPath();
-  ctx.moveTo(39.7,10);ctx.quadraticCurveTo(40.8,12.3,38.9,12.8);
-  ctx.stroke();
+  ctx.ellipse(14, 27 - footBob, 7, 3.5, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Three tiny toes on each foot
+  ctx.strokeStyle = m.gold ? "#a98e49" : "#8e999b";
+  ctx.lineWidth = 1.15;
+
+  for (var toe = -1; toe <= 1; toe++) {
+    ctx.beginPath();
+    ctx.moveTo(-9 + toe * 2, 28 + footBob);
+    ctx.lineTo(-10 + toe * 2, 31 + footBob);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(14 + toe * 2, 28 - footBob);
+    ctx.lineTo(15 + toe * 2, 31 - footBob);
+    ctx.stroke();
+  }
 
   ctx.restore();
 }
