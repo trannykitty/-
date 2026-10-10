@@ -26,7 +26,11 @@
     <button id="endless" class="soft" type="button">Endless &amp; Chill</button>
     <button id="shop" class="shopButton" type="button">Mouse Shop</button>
   </div>
-  <button id="infoButton" class="infoButton" type="button" aria-haspopup="dialog" aria-controls="infoScreen">ⓘ Game Info</button>
+  <button id="infoButton" class="infoButton" type="button" aria-haspopup="dialog" aria-controls="infoScreen">
+    <span class="infoIcon" aria-hidden="true"><span></span></span>
+    <span class="infoButtonLabel"><strong>Game Info</strong><small>Modes &amp; tips</small></span>
+    <span class="infoArrow" aria-hidden="true">›</span>
+  </button>
 </div>
 
 <div id="infoScreen" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
