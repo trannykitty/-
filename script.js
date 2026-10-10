@@ -505,6 +505,19 @@ canvas.addEventListener("pointerdown",function(e){
   }
 });
 
+var infoScreen=document.getElementById("infoScreen");
+function closeInfo(){
+  if(infoScreen)infoScreen.classList.add("hidden");
+}
+document.getElementById("infoButton").addEventListener("click",function(){
+  if(infoScreen)infoScreen.classList.remove("hidden");
+});
+document.getElementById("closeInfo").addEventListener("click",closeInfo);
+if(infoScreen){
+  infoScreen.addEventListener("click",function(e){if(e.target===infoScreen)closeInfo();});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeInfo();});
+}
+
 document.getElementById("play").addEventListener("click",function(){startGame("normal")});
 document.getElementById("shop").addEventListener("click",openShop);
 document.getElementById("closeShop").addEventListener("click",closeShop);

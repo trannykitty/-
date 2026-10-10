@@ -26,8 +26,44 @@
     <button id="endless" class="soft" type="button">Endless &amp; Chill</button>
     <button id="shop" class="shopButton" type="button">Mouse Shop</button>
   </div>
+  <button id="infoButton" class="infoButton" type="button" aria-haspopup="dialog" aria-controls="infoScreen">ⓘ Game Info</button>
 </div>
 
+<div id="infoScreen" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+  <div class="card infoCard">
+    <div class="infoEyebrow">A LITTLE GUIDE</div>
+    <h2 id="infoTitle">How to Play</h2>
+    <p class="infoIntro">Catch the wandering mice before they scurry off. Here is how each mode works.</p>
+    <div class="modeInfoGrid">
+      <section class="modeInfo modeRelax">
+        <div class="modeInfoTitle"><span class="modeDot"></span><h3>Relax &amp; Play</h3></div>
+        <div class="modeTag">4 LIVES</div>
+        <p>You start with four lives. Every mouse that escapes costs one life. When you run out, your session ends.</p>
+        <ul>
+          <li>Misses cost a life.</li>
+          <li>Build your score and combo by catching mice.</li>
+          <li>Difficulty gradually rises as your score grows.</li>
+        </ul>
+      </section>
+      <section class="modeInfo modeEndless">
+        <div class="modeInfoTitle"><span class="modeDot"></span><h3>Endless &amp; Chill</h3></div>
+        <div class="modeTag">NO LIVES LIMIT</div>
+        <p>Keep playing for as long as you like. Mice can escape without ending your run.</p>
+        <ul>
+          <li>Missing a mouse resets your combo, not your run.</li>
+          <li>Try to beat your best score.</li>
+          <li>The game still gets busier as your score increases.</li>
+        </ul>
+      </section>
+    </div>
+    <section class="infoTips">
+      <h3>🐾 Little tips</h3>
+      <p>Regular mice are worth 1 point; golden mice are worth 5. Catching mice earns cheese treats for upgrades, and catching enough over time unlocks hats in the Mouse Shop.</p>
+      <p class="infoDifficulty">In both modes, every 15 points raises the difficulty. Mice move faster and appear more often; from level 6, an extra mouse may appear sometimes.</p>
+    </section>
+    <button id="closeInfo" class="soft infoClose" type="button">Back to Menu</button>
+  </div>
+</div>
 
 <div id="shopScreen" class="screen hidden">
   <div class="card shopCard">
