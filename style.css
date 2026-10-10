@@ -192,3 +192,17 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
   .modeInfo{padding:14px}
   .modeInfo p{font-size:12px}
 }
+
+
+/* Low-key update prompt shown when GitHub Pages publishes a newer version. */
+.updateNotice{z-index:120!important;cursor:default;background:rgba(5,10,14,.78)}
+.updateNoticeCard{width:min(92vw,440px);padding:30px 28px;text-align:center;border-color:rgba(245,205,222,.19);background:linear-gradient(150deg,rgba(28,39,46,.98),rgba(16,25,31,.98));box-shadow:0 32px 100px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.08)}
+.updateBadge{display:inline-flex;align-items:center;gap:8px;margin-bottom:13px;padding:7px 10px;border-radius:999px;border:1px solid rgba(241,185,208,.2);background:rgba(231,169,193,.08);color:#eac2d3;font-size:9px;font-weight:900;letter-spacing:1.6px}
+.updateBadgeDot{width:6px;height:6px;border-radius:50%;background:#f0b6cd;box-shadow:0 0 10px rgba(240,182,205,.55)}
+.updateNoticeCard h2{margin:0 0 10px;font-size:27px;letter-spacing:-.6px}
+.updateNoticeText{margin:0 auto 16px;max-width:330px;color:#c5d1d4;font-size:13px;line-height:1.6}
+.updateKeys{display:flex;align-items:center;justify-content:center;gap:9px;margin:16px 0 10px;color:#8fa2a7;font-size:13px;font-weight:700}
+.updateKeys kbd{display:inline-grid;place-items:center;min-width:48px;height:42px;padding:0 12px;border-radius:11px;border:1px solid rgba(255,255,255,.15);border-bottom-width:3px;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.045));color:#f6edf1;font-family:inherit;font-size:13px;font-weight:850;box-shadow:0 5px 12px rgba(0,0,0,.18)}
+.updateNoticeHint{margin:0 0 18px!important;color:#90a2a6!important;font-size:10px!important}
+.updateNoticeButton{min-width:135px;margin:0;border:1px solid rgba(255,255,255,.12);background:rgba(231,169,193,.14)!important;color:#f3e7ec!important}
+@media(max-width:560px){.updateNoticeCard{padding:25px 18px}.updateNoticeCard h2{font-size:24px}.updateKeys{gap:6px}.updateKeys kbd{min-width:43px;height:39px}}

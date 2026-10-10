@@ -1,6 +1,12 @@
 (function(){
 "use strict";
 
+// Keep this in sync with version.json whenever publishing a new game build.
+var BUILD_VERSION="2026.10.09.1";
+var updatePending=false;
+var updateNoticeShown=false;
+var updateNotice=null;
+
 var canvas=document.getElementById("game");
 var ctx=canvas.getContext("2d");
 var menu=document.getElementById("menu");
@@ -172,6 +178,7 @@ function closeShop(){
   state="menu";
   document.getElementById("shopScreen").classList.add("hidden");
   menu.classList.remove("hidden");
+  maybeShowUpdateNotice();
 }
 
 function updateHud(){
@@ -547,6 +554,7 @@ function mainMenu(){
   pauseScreen.classList.add("hidden");
   over.classList.add("hidden");
   menu.classList.remove("hidden");
+  maybeShowUpdateNotice();
 }
 
 document.getElementById("quit").addEventListener("click",mainMenu);
@@ -571,4 +579,80 @@ document.getElementById("sound").addEventListener("click",function(){
     }
   }
 });
+
+// Checks the tiny version manifest on GitHub Pages without relying on cached responses.
+// When the published version changes, prompt the player to hard-refresh the browser.
+function ensureUpdateNotice(){
+  if(updateNotice)return updateNotice;
+
+  updateNotice=document.createElement("div");
+  updateNotice.id="updateNotice";
+  updateNotice.className="screen hidden updateNotice";
+  updateNotice.setAttribute("role","alertdialog");
+  updateNotice.setAttribute("aria-modal","true");
+  updateNotice.setAttribute("aria-labelledby","updateNoticeTitle");
+
+  var card=document.createElement("div");
+  card.className="card updateNoticeCard";
+  card.innerHTML=
+    '<div class="updateBadge"><span class="updateBadgeDot"></span> UPDATE AVAILABLE</div>'+
+    '<h2 id="updateNoticeTitle">Mad Mice has an update</h2>'+
+    '<p class="updateNoticeText">A newer version has been published. To load the latest fixes and features, hard-refresh this page:</p>'+
+    '<div class="updateKeys" aria-label="Press Control, Shift, and R together"><kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>R</kbd></div>'+
+    '<p class="updateNoticeHint">Press all three keys together while this tab is focused.</p>'+
+    '<button id="dismissUpdateNotice" class="soft updateNoticeButton" type="button">Got it</button>';
+
+  updateNotice.appendChild(card);
+  document.body.appendChild(updateNotice);
+
+  var dismiss=document.getElementById("dismissUpdateNotice");
+  dismiss.addEventListener("click",function(){
+    updateNotice.classList.add("hidden");
+  });
+  updateNotice.addEventListener("click",function(e){
+    if(e.target===updateNotice)updateNotice.classList.add("hidden");
+  });
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape" && updateNotice && !updateNotice.classList.contains("hidden")){
+      updateNotice.classList.add("hidden");
+    }
+  });
+  return updateNotice;
+}
+
+function maybeShowUpdateNotice(){
+  if(!updatePending || updateNoticeShown)return;
+  // Avoid interrupting an active run; show the prompt at the menu/shop instead.
+  if(state!=="menu" && state!=="shop")return;
+  var notice=ensureUpdateNotice();
+  updateNoticeShown=true;
+  notice.classList.remove("hidden");
+}
+
+function checkForGameUpdate(){
+  if(!window.fetch)return;
+  fetch("./version.json?check="+Date.now(),{cache:"no-store"})
+    .then(function(response){
+      if(!response.ok)throw new Error("Version check unavailable");
+      return response.json();
+    })
+    .then(function(manifest){
+      var publishedVersion=String(manifest && manifest.version || "");
+      if(publishedVersion && publishedVersion!==BUILD_VERSION){
+        updatePending=true;
+        maybeShowUpdateNotice();
+      }
+    })
+    .catch(function(){
+      // Checking for updates is optional; a temporary/offline failure should not interrupt play.
+    });
+}
+
+checkForGameUpdate();
+window.setInterval(checkForGameUpdate,60000);
+window.addEventListener("focus",checkForGameUpdate);
+document.addEventListener("visibilitychange",function(){
+  if(!document.hidden)checkForGameUpdate();
+});
+
 })();
