@@ -35,6 +35,27 @@
     <span class="infoButtonLabel"><strong>Game Info</strong><small>Modes &amp; tips</small></span>
     <span class="infoArrow" aria-hidden="true">›</span>
   </button>
+  <button id="suggestionButton" class="suggestionButton" type="button" aria-haspopup="dialog" aria-controls="suggestionScreen">
+    <span class="suggestionIcon" aria-hidden="true">✎</span>
+    <span class="suggestionButtonLabel"><strong>Suggestions</strong><small>Share an idea</small></span>
+    <span class="infoArrow" aria-hidden="true">›</span>
+  </button>
+</div>
+
+<div id="suggestionScreen" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="suggestionTitle">
+  <div class="card suggestionCard">
+    <div class="suggestionEyebrow">HELP MAD MICE GROW</div>
+    <h2 id="suggestionTitle">Got an idea?</h2>
+    <p class="suggestionIntro">Suggest a feature, hat, upgrade, or anything you'd love to see.</p>
+    <label class="suggestionLabel" for="suggestionText">Your suggestion</label>
+    <textarea id="suggestionText" maxlength="600" placeholder="I think it would be cute if…"></textarea>
+    <div class="suggestionFooter"><small id="suggestionStatus" role="status">Suggestions are saved on this device.</small><span id="suggestionCount">0 / 600</span></div>
+    <div id="savedSuggestions" class="savedSuggestions"></div>
+    <div class="suggestionActions">
+      <button id="saveSuggestion" type="button">Save Suggestion</button>
+      <button id="closeSuggestions" class="soft" type="button">Back to Menu</button>
+    </div>
+  </div>
 </div>
 
 <div id="infoScreen" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="infoTitle">

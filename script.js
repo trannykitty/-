@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="2026.10.11.3";
+var BUILD_VERSION="2026.10.11.4";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
@@ -541,8 +541,38 @@ document.getElementById("infoButton").addEventListener("click",function(){
 document.getElementById("closeInfo").addEventListener("click",closeInfo);
 if(infoScreen){
   infoScreen.addEventListener("click",function(e){if(e.target===infoScreen)closeInfo();});
-  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeInfo();});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeInfo();closeSuggestions();}});
 }
+
+// Suggestions are stored locally in this browser; they are not sent to a server.
+var suggestionScreen=document.getElementById("suggestionScreen");
+var suggestionText=document.getElementById("suggestionText");
+var suggestionStatus=document.getElementById("suggestionStatus");
+var suggestionCount=document.getElementById("suggestionCount");
+var savedSuggestions=document.getElementById("savedSuggestions");
+function getSavedSuggestions(){try{return JSON.parse(localStorage.getItem("madMiceSuggestions")||"[]");}catch(e){return [];}}
+function renderSavedSuggestions(){
+  if(!savedSuggestions)return;
+  var items=getSavedSuggestions();savedSuggestions.innerHTML="";
+  items.slice().reverse().forEach(function(item){
+    var card=document.createElement("div");card.className="savedSuggestionItem";
+    var content=document.createElement("div");content.textContent=item.text;card.appendChild(content);
+    var date=document.createElement("span");date.className="savedSuggestionDate";date.textContent=item.date;card.appendChild(date);savedSuggestions.appendChild(card);
+  });
+}
+function closeSuggestions(){if(suggestionScreen)suggestionScreen.classList.add("hidden");}
+document.getElementById("suggestionButton").addEventListener("click",function(){
+  renderSavedSuggestions();suggestionScreen.classList.remove("hidden");suggestionStatus.textContent="Suggestions are saved on this device.";suggestionText.focus();
+});
+document.getElementById("closeSuggestions").addEventListener("click",closeSuggestions);
+suggestionScreen.addEventListener("click",function(e){if(e.target===suggestionScreen)closeSuggestions();});
+suggestionText.addEventListener("input",function(){suggestionCount.textContent=suggestionText.value.length+" / 600";});
+document.getElementById("saveSuggestion").addEventListener("click",function(){
+  var value=suggestionText.value.trim();
+  if(!value){suggestionStatus.textContent="Write a little idea first!";suggestionText.focus();return;}
+  try{var items=getSavedSuggestions();items.push({text:value,date:new Date().toLocaleString()});localStorage.setItem("madMiceSuggestions",JSON.stringify(items.slice(-30)));suggestionText.value="";suggestionCount.textContent="0 / 600";suggestionStatus.textContent="Saved! This suggestion is only stored in this browser.";renderSavedSuggestions();}
+  catch(e){suggestionStatus.textContent="Could not save in this browser. Check storage settings.";}
+});
 
 document.getElementById("play").addEventListener("click",function(){startGame("normal")});
 document.getElementById("shop").addEventListener("click",openShop);
