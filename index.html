@@ -25,6 +25,7 @@
     <button id="play" type="button">Relax &amp; Play</button>
     <button id="endless" class="soft" type="button">Endless &amp; Chill</button>
     <button id="proMode" class="proModeButton" type="button">Pro Mode</button>
+    <button id="leaderboardButton" class="leaderboardButton" type="button">🏆 Leaderboard</button>
     <button id="shop" class="shopButton" type="button">Mouse Shop</button>
   </div>
   <button id="infoButton" class="infoButton" type="button" aria-haspopup="dialog" aria-controls="infoScreen">
@@ -80,6 +81,34 @@
   </div>
 </div>
 
+
+<div id="leaderboardScreen" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="leaderboardTitle">
+  <div class="card leaderboardCard">
+    <div class="leaderboardEyebrow">MAD MICE · GLOBAL SCORES</div>
+    <h2 id="leaderboardTitle">Leaderboard</h2>
+    <p class="leaderboardIntro">Compete with other players. Each nickname keeps its best score in each mode.</p>
+    <div class="leaderboardNameRow">
+      <label for="leaderboardPlayerName">Your nickname</label>
+      <div class="leaderboardNameControls">
+        <input id="leaderboardPlayerName" type="text" maxlength="18" autocomplete="nickname" placeholder="Choose a nickname">
+        <button id="savePlayerName" type="button">Save</button>
+      </div>
+      <small>2–18 letters, numbers, spaces, dots, dashes, or underscores.</small>
+    </div>
+    <div id="leaderboardTabs" class="leaderboardTabs" role="tablist" aria-label="Game mode leaderboard">
+      <button type="button" data-board-mode="normal" class="active" role="tab" aria-selected="true">Relax</button>
+      <button type="button" data-board-mode="endless" role="tab" aria-selected="false">Endless</button>
+      <button type="button" data-board-mode="pro" role="tab" aria-selected="false">Pro</button>
+    </div>
+    <div id="leaderboardStatus" class="leaderboardStatus" role="status">Loading scores…</div>
+    <div id="leaderboardList" class="leaderboardList" aria-live="polite"></div>
+    <div class="leaderboardActions">
+      <button id="refreshLeaderboard" class="soft" type="button">↻ Refresh</button>
+      <button id="closeLeaderboard" class="soft" type="button">Back to Menu</button>
+    </div>
+  </div>
+</div>
+
 <div id="shopScreen" class="screen hidden">
   <div class="card shopCard">
     <div class="shopTop">
@@ -132,6 +161,7 @@
 
 <div id="error" class="error hidden"></div>
 <audio id="bgMusic" preload="auto" loop src="./bg_song.mp3"></audio>
+<script src="./leaderboard-config.js"></script>
 <script src="./script.js"></script>
 </body>
 </html>

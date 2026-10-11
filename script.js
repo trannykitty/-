@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="2026.10.11.2";
+var BUILD_VERSION="2026.10.11.3";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
@@ -29,6 +29,9 @@ var bestScores={
 };
 var score=0,caught=0,combo=0,best=bestScores[mode];
 var lives=4;
+var runSubmitted=false;
+var runSubmitPending=false;
+var leaderboardMode="normal";
 var lifetimeCaught=Number(localStorage.getItem("MadMiceLifetimeCaught")||0);
 var treats=Number(localStorage.getItem("MadMiceTreats")||0);
 var equippedHat=localStorage.getItem("MadMiceHat")||"none";
@@ -211,6 +214,8 @@ function startGame(selectedMode){
   caught=0;
   combo=0;
   lives=selectedMode==="pro"?3:4;
+  runSubmitted=false;
+  runSubmitPending=false;
   spawnTimer=999;
   mice=[];
   particles=[];
@@ -474,6 +479,7 @@ function gameLoop(now){
         updateHud();
         if(lives===0){
           state="over";
+          submitRunScore();
           document.getElementById("finalScore").textContent=score;
           document.getElementById("finalCaught").textContent=caught;
           document.querySelector("#over h2").textContent="Out of lives";
@@ -561,6 +567,7 @@ document.getElementById("resume").addEventListener("click",function(){
 });
 
 function mainMenu(){
+  if(state==="playing" || state==="paused")submitRunScore();
   state="menu";
   mice=[];
   particles=[];
@@ -581,6 +588,159 @@ window.addEventListener("error",function(e){
 });
 
 updateHud();
+
+// Online leaderboard (Supabase). Only a public/publishable key belongs in the browser.
+var leaderboardScreen=document.getElementById("leaderboardScreen");
+var leaderboardStatus=document.getElementById("leaderboardStatus");
+var leaderboardList=document.getElementById("leaderboardList");
+var leaderboardPlayerName=document.getElementById("leaderboardPlayerName");
+var leaderboardConfig=window.MAD_MICE_LEADERBOARD_CONFIG||{};
+var boardModeLabels={normal:"Relax & Play",endless:"Endless & Chill",pro:"Pro Mode"};
+
+function safePlayerName(value){
+  return String(value||"").replace(/[^a-zA-Z0-9 _.-]/g,"").trim().replace(/\s+/g," ").slice(0,18);
+}
+function supabaseReady(){
+  var url=String(leaderboardConfig.url||"").trim().replace(/\/$/,"");
+  var key=String(leaderboardConfig.publishableKey||"").trim();
+  return /^https:\/\/[a-zA-Z0-9-]+\.supabase\.co$/.test(url) && key.length>10 && !/YOUR_|PASTE_/i.test(key);
+}
+function supabaseHeaders(extra){
+  var headers={"apikey":String(leaderboardConfig.publishableKey||"").trim()};
+  Object.keys(extra||{}).forEach(function(k){headers[k]=extra[k];});
+  return headers;
+}
+function setLeaderboardStatus(message,kind){
+  leaderboardStatus.textContent=message;
+  leaderboardStatus.className="leaderboardStatus"+(kind?" "+kind:"");
+}
+function leaderboardModeName(modeKey){return boardModeLabels[modeKey]||"Relax & Play";}
+function openLeaderboard(){
+  // Retry a previous run if a temporary network error stopped its first submission.
+  if(score>0 && !runSubmitted && !runSubmitPending)submitRunScore();
+  state="leaderboard";
+  menu.classList.add("hidden");
+  document.getElementById("shopScreen").classList.add("hidden");
+  infoScreen.classList.add("hidden");
+  hud.classList.add("hidden");
+  pauseScreen.classList.add("hidden");
+  over.classList.add("hidden");
+  leaderboardScreen.classList.remove("hidden");
+  leaderboardPlayerName.value=localStorage.getItem("MadMicePlayerName")||"Player";
+  loadLeaderboard(leaderboardMode);
+}
+function closeLeaderboard(){
+  leaderboardScreen.classList.add("hidden");
+  state="menu";
+  menu.classList.remove("hidden");
+  maybeShowUpdateNotice();
+}
+function setLeaderboardMode(nextMode){
+  if(["normal","endless","pro"].indexOf(nextMode)<0)return;
+  leaderboardMode=nextMode;
+  Array.prototype.forEach.call(document.querySelectorAll("[data-board-mode]"),function(btn){
+    var active=btn.getAttribute("data-board-mode")===nextMode;
+    btn.classList.toggle("active",active);
+    btn.setAttribute("aria-selected",active?"true":"false");
+  });
+  loadLeaderboard(nextMode);
+}
+function renderLeaderboardRows(rows){
+  leaderboardList.innerHTML="";
+  if(!rows || !rows.length){
+    var empty=document.createElement("div");
+    empty.className="leaderboardEmpty";
+    empty.textContent="No scores yet for "+leaderboardModeName(leaderboardMode)+". Be the first on the board!";
+    leaderboardList.appendChild(empty);
+    return;
+  }
+  rows.forEach(function(row,index){
+    var item=document.createElement("div");
+    item.className="leaderboardRow"+(index<3?" topRank rank"+(index+1):"");
+    var rank=document.createElement("div");
+    rank.className="leaderboardRank";
+    rank.textContent=index===0?"1st":index===1?"2nd":index===2?"3rd":String(index+1);
+    var name=document.createElement("div");
+    name.className="leaderboardName";
+    name.textContent=String(row.player_name||"Player");
+    var detail=document.createElement("small");
+    detail.textContent=String(Number(row.caught)||0)+" caught";
+    name.appendChild(detail);
+    var points=document.createElement("div");
+    points.className="leaderboardScore";
+    points.textContent=(Number(row.score)||0).toLocaleString();
+    item.appendChild(rank);item.appendChild(name);item.appendChild(points);
+    leaderboardList.appendChild(item);
+  });
+}
+function loadLeaderboard(modeKey){
+  leaderboardMode=modeKey||leaderboardMode;
+  leaderboardList.innerHTML="";
+  if(!supabaseReady()){
+    setLeaderboardStatus("Online scores need a one-time setup. Open LEADERBOARD_SETUP.md, run the included SQL in Supabase, then add your project URL and publishable key to leaderboard-config.js.","setupNeeded");
+    var setup=document.createElement("div");
+    setup.className="leaderboardEmpty setupBox";
+    setup.textContent="Leaderboard connection not configured yet. Your local Best scores still work normally.";
+    leaderboardList.appendChild(setup);
+    return;
+  }
+  setLeaderboardStatus("Loading "+leaderboardModeName(leaderboardMode)+" scores…");
+  var url=String(leaderboardConfig.url).trim().replace(/\/$/,"");
+  var params="?select=player_name,mode,score,caught,updated_at&mode=eq."+encodeURIComponent(leaderboardMode)+"&order=score.desc,updated_at.asc&limit=100";
+  fetch(url+"/rest/v1/mad_mice_leaderboard"+params,{method:"GET",headers:supabaseHeaders(),cache:"no-store"})
+    .then(function(response){return response.text().then(function(body){if(!response.ok)throw new Error(body||("HTTP "+response.status));return body?JSON.parse(body):[];});})
+    .then(function(rows){
+      if(!leaderboardScreen.classList.contains("hidden") && leaderboardMode===modeKey){
+        renderLeaderboardRows(rows);
+        setLeaderboardStatus("Top 100 · "+leaderboardModeName(modeKey),"success");
+      }
+    })
+    .catch(function(error){
+      if(leaderboardMode!==modeKey)return;
+      setLeaderboardStatus("Couldn't load scores. Check your Supabase URL/key and run supabase-leaderboard.sql. Details: "+String(error.message||error).slice(0,180),"error");
+    });
+}
+function submitRunScore(){
+  if(runSubmitted || runSubmitPending || score<=0 || !supabaseReady())return;
+  runSubmitPending=true;
+  var player=safePlayerName(localStorage.getItem("MadMicePlayerName")||"Player");
+  if(player.length<2)player="Player";
+  var url=String(leaderboardConfig.url).trim().replace(/\/$/,"");
+  fetch(url+"/rest/v1/rpc/submit_mad_mice_score",{
+    method:"POST",
+    headers:supabaseHeaders({"Content-Type":"application/json"}),
+    body:JSON.stringify({p_player_name:player,p_mode:mode,p_score:score,p_caught:caught})
+  }).then(function(response){
+    return response.text().then(function(body){
+      if(!response.ok)throw new Error(body||("HTTP "+response.status));
+      runSubmitPending=false;
+      runSubmitted=true;
+      if(!leaderboardScreen.classList.contains("hidden"))loadLeaderboard(leaderboardMode);
+    });
+  }).catch(function(error){
+    runSubmitPending=false;
+    runSubmitted=false;
+    console.warn("Mad Mice leaderboard submission failed:",error);
+    if(!leaderboardScreen.classList.contains("hidden"))setLeaderboardStatus("Score wasn't submitted. Check the leaderboard setup and try Refresh.","error");
+  });
+}
+
+document.getElementById("leaderboardButton").addEventListener("click",openLeaderboard);
+document.getElementById("closeLeaderboard").addEventListener("click",closeLeaderboard);
+document.getElementById("refreshLeaderboard").addEventListener("click",function(){loadLeaderboard(leaderboardMode);});
+document.querySelectorAll("[data-board-mode]").forEach(function(btn){
+  btn.addEventListener("click",function(){setLeaderboardMode(btn.getAttribute("data-board-mode"));});
+});
+document.getElementById("savePlayerName").addEventListener("click",function(){
+  var name=safePlayerName(leaderboardPlayerName.value);
+  if(name.length<2){setLeaderboardStatus("Choose a nickname with at least 2 valid characters.","error");return;}
+  leaderboardPlayerName.value=name;
+  localStorage.setItem("MadMicePlayerName",name);
+  setLeaderboardStatus("Nickname saved as “"+name+"”. Your next completed run can be submitted.","success");
+});
+leaderboardPlayerName.addEventListener("keydown",function(e){if(e.key==="Enter")document.getElementById("savePlayerName").click();});
+leaderboardScreen.addEventListener("click",function(e){if(e.target===leaderboardScreen)closeLeaderboard();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!leaderboardScreen.classList.contains("hidden"))closeLeaderboard();});
 
 document.getElementById("sound").addEventListener("click",function(){
   soundEnabled=!soundEnabled;
