@@ -686,13 +686,13 @@ function loadLeaderboard(modeKey){
   }
   setLeaderboardStatus("Loading "+leaderboardModeName(leaderboardMode)+" scores…");
   var url=String(leaderboardConfig.url).trim().replace(/\/$/,"");
-  var params="?select=player_name,mode,score,caught,updated_at&mode=eq."+encodeURIComponent(leaderboardMode)+"&order=score.desc,updated_at.asc&limit=100";
+  var params="?select=player_name,mode,score,caught,updated_at&mode=eq."+encodeURIComponent(leaderboardMode)+"&order=score.desc,updated_at.asc&limit=10";
   fetch(url+"/rest/v1/mad_mice_leaderboard"+params,{method:"GET",headers:supabaseHeaders(),cache:"no-store"})
     .then(function(response){return response.text().then(function(body){if(!response.ok)throw new Error(body||("HTTP "+response.status));return body?JSON.parse(body):[];});})
     .then(function(rows){
       if(!leaderboardScreen.classList.contains("hidden") && leaderboardMode===modeKey){
         renderLeaderboardRows(rows);
-        setLeaderboardStatus("Top 100 · "+leaderboardModeName(modeKey),"success");
+        setLeaderboardStatus("Top 10 · "+leaderboardModeName(modeKey),"success");
       }
     })
     .catch(function(error){
