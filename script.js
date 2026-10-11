@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="2026.10.11.1";
+var BUILD_VERSION="2026.10.11.2";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
@@ -20,7 +20,14 @@ var errorBox=document.getElementById("error");
 var W=window.innerWidth,H=window.innerHeight,dpr=1;
 var state="menu",mode="normal";
 var mice=[],particles=[];
-var score=0,caught=0,combo=0,best=Number(localStorage.getItem("MadMiceBest")||0);
+// Each mode gets its own persistent high score, so one mode never changes another's best.
+var modeBestKeys={normal:"MadMiceBestRelax",endless:"MadMiceBestEndless",pro:"MadMiceBestPro"};
+var bestScores={
+  normal:Number(localStorage.getItem("MadMiceBestRelax")||0),
+  endless:Number(localStorage.getItem("MadMiceBestEndless")||0),
+  pro:Number(localStorage.getItem("MadMiceBestPro")||0)
+};
+var score=0,caught=0,combo=0,best=bestScores[mode];
 var lives=4;
 var lifetimeCaught=Number(localStorage.getItem("MadMiceLifetimeCaught")||0);
 var treats=Number(localStorage.getItem("MadMiceTreats")||0);
@@ -186,6 +193,7 @@ function closeShop(){
 function updateHud(){
   document.getElementById("score").textContent=score;
   document.getElementById("combo").textContent="x"+Math.max(1,combo);
+  best=bestScores[mode]||0;
   document.getElementById("best").textContent=best;
   var livesBox=document.getElementById("livesBox");
   if(mode==="normal" || mode==="pro"){
@@ -417,9 +425,10 @@ function catchMouse(m,x,y){
   treats+=(m.gold?5:2)+(upgrades.treats||0);
   localStorage.setItem("MadMiceTreats",String(treats));
   score+=m.gold?5:1;
-  if(score>best){
+  if(score>(bestScores[mode]||0)){
+    bestScores[mode]=score;
     best=score;
-    localStorage.setItem("MadMiceBest",String(best));
+    localStorage.setItem(modeBestKeys[mode],String(best));
   }
   for(var i=0;i<10;i++){
     var a=Math.random()*Math.PI*2,s=20+Math.random()*60;
