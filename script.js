@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="2026.10.09.5";
+var BUILD_VERSION="2026.10.11.1";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
@@ -188,7 +188,7 @@ function updateHud(){
   document.getElementById("combo").textContent="x"+Math.max(1,combo);
   document.getElementById("best").textContent=best;
   var livesBox=document.getElementById("livesBox");
-  if(mode==="normal"){
+  if(mode==="normal" || mode==="pro"){
     livesBox.classList.remove("hidden");
     document.getElementById("lives").textContent=lives;
   }else{
@@ -202,7 +202,7 @@ function startGame(selectedMode){
   score=0;
   caught=0;
   combo=0;
-  lives=4;
+  lives=selectedMode==="pro"?3:4;
   spawnTimer=999;
   mice=[];
   particles=[];
@@ -224,8 +224,8 @@ function startGame(selectedMode){
 
 function spawnMouse(){
   var fromLeft=Math.random()<0.5;
-  var level=1+Math.floor(score/15);
-  var speed=(55+Math.random()*45+level*2)*(1-(upgrades.slow||0)*0.08);
+  var level=1+Math.floor(score/(mode==="pro"?10:15));
+  var speed=(mode==="pro"?78+Math.random()*52+level*4:55+Math.random()*45+level*2)*(1-(upgrades.slow||0)*0.08);
   var m={
     x:fromLeft?-70:W+70,
     y:100+Math.random()*Math.max(80,H-190),
@@ -436,13 +436,15 @@ function gameLoop(now){
   lastTime=now;
   spawnTimer+=dt;
 
-  var level=1+Math.floor(score/15);
-  var interval=Math.max(.55,(1.25-level*.025)*(1-(upgrades.rush||0)*0.06));
+  var level=1+Math.floor(score/(mode==="pro"?10:15));
+  var interval=mode==="pro"
+    ? Math.max(.38,(.92-level*.035)*(1-(upgrades.rush||0)*0.06))
+    : Math.max(.55,(1.25-level*.025)*(1-(upgrades.rush||0)*0.06));
 
   if(spawnTimer>=interval){
     spawnTimer=0;
     spawnMouse();
-    if(level>=6 && Math.random()<.1)spawnMouse();
+    if((mode==="pro"?level>=4:level>=6) && Math.random()<(mode==="pro"?.18:.1))spawnMouse();
   }
 
   drawBackground();
@@ -458,7 +460,7 @@ function gameLoop(now){
       mice=mice.filter(function(q){return q!==m});
       combo=0;
 
-      if(mode==="normal"){
+      if(mode==="normal" || mode==="pro"){
         lives=Math.max(0,lives-1);
         updateHud();
         if(lives===0){
@@ -506,7 +508,7 @@ canvas.addEventListener("pointerdown",function(e){
     var m=mice[i];
     var my=m.y+Math.sin(m.phase)*m.wiggle;
     var dx=px-m.x,dy=py-my;
-    var catchRadius=58+(upgrades.magnet||0)*6;
+    var catchRadius=(mode==="pro"?49:58)+(upgrades.magnet||0)*6;
     if(dx*dx+dy*dy<catchRadius*catchRadius){
       catchMouse(m,px,py);
       return;
@@ -531,6 +533,7 @@ document.getElementById("play").addEventListener("click",function(){startGame("n
 document.getElementById("shop").addEventListener("click",openShop);
 document.getElementById("closeShop").addEventListener("click",closeShop);
 document.getElementById("endless").addEventListener("click",function(){startGame("endless")});
+document.getElementById("proMode").addEventListener("click",function(){startGame("pro")});
 
 document.getElementById("pause").addEventListener("click",function(){
   if(state==="playing"){

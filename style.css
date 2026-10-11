@@ -125,6 +125,22 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 @media(max-width:560px){.hatGrid{grid-template-columns:repeat(2,1fr)}}
 
 
+
+/* Pro mode: distinct but consistent with the dark glass menu */
+.proModeButton{
+  display:block;min-width:190px;margin:10px auto 4px;
+  border:1px solid rgba(197,158,255,.34);
+  background:linear-gradient(135deg,rgba(115,77,160,.34),rgba(56,45,86,.72));
+  color:#f3eaff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 7px 22px rgba(82,54,130,.14);
+  transition:transform .16s ease,border-color .16s ease,background .16s ease;
+}
+.proModeButton:hover{transform:translateY(-1px);border-color:rgba(218,190,255,.72);background:linear-gradient(135deg,rgba(130,88,180,.48),rgba(64,48,100,.86))}
+.proModeButton:focus-visible{outline:2px solid #d9bfff;outline-offset:3px}
+.modePro{grid-column:1 / -1;background:linear-gradient(145deg,rgba(158,120,216,.12),rgba(255,255,255,.035))}
+.modePro .modeDot{background:#c3a4fa;box-shadow:0 0 12px rgba(195,164,250,.5)}
+.modePro .modeTag{color:#deccff}
+
 /* Crisp, glassy main-menu info button and mode guide */
 .infoButton{
   position:fixed;left:18px;bottom:18px;z-index:32;

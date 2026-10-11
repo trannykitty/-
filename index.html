@@ -24,6 +24,7 @@
     <p>A tiny, cozy game about catching wandering mice.<br>There is no rush. Just relax and play.</p>
     <button id="play" type="button">Relax &amp; Play</button>
     <button id="endless" class="soft" type="button">Endless &amp; Chill</button>
+    <button id="proMode" class="proModeButton" type="button">Pro Mode</button>
     <button id="shop" class="shopButton" type="button">Mouse Shop</button>
   </div>
   <button id="infoButton" class="infoButton" type="button" aria-haspopup="dialog" aria-controls="infoScreen">
@@ -59,11 +60,21 @@
           <li>The game still gets busier as your score increases.</li>
         </ul>
       </section>
+      <section class="modeInfo modePro">
+        <div class="modeInfoTitle"><span class="modeDot"></span><h3>Pro Mode</h3></div>
+        <div class="modeTag">3 LIVES · HARD</div>
+        <p>A faster, more demanding challenge for experienced mouse catchers.</p>
+        <ul>
+          <li>Start with only three lives.</li>
+          <li>Mice move faster and appear more often.</li>
+          <li>Difficulty rises every 10 points, and the catch area is smaller.</li>
+        </ul>
+      </section>
     </div>
     <section class="infoTips">
       <h3>Little tips</h3>
       <p>Regular mice are worth 1 point; golden mice are worth 5. Catching mice earns cheese treats for upgrades, and catching enough over time unlocks hats in the Mouse Shop.</p>
-      <p class="infoDifficulty">In both modes, every 15 points raises the difficulty. Mice move faster and appear more often; from level 6, an extra mouse may appear sometimes.</p>
+      <p class="infoDifficulty">Relax &amp; Play and Endless &amp; Chill raise difficulty every 15 points. Pro Mode raises it every 10 points, with faster spawns and a smaller catch area. From higher levels, extra mice may appear.</p>
     </section>
     <button id="closeInfo" class="soft infoClose" type="button">Back to Menu</button>
   </div>
