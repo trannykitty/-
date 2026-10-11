@@ -148,7 +148,7 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 
 /* Crisp, glassy main-menu info button and mode guide */
 .infoButton{
-  position:fixed;left:18px;bottom:18px;z-index:32;
+  position:fixed;left:18px;bottom:82px;z-index:32;
   display:inline-flex;align-items:center;gap:10px;
   margin:0;padding:9px 13px 9px 9px;min-height:54px;
   border:1px solid rgba(245,205,222,.25);border-radius:17px;
@@ -206,7 +206,7 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 .infoTips .infoDifficulty{color:#99aeb2;font-size:11px}
 .infoClose{display:block;width:100%;margin:15px 0 0}
 @media(max-width:560px){
-  .infoButton{left:12px;bottom:12px;gap:8px;min-height:50px;padding:8px 11px 8px 8px}
+  .infoButton{left:12px;bottom:70px;gap:8px;min-height:50px;padding:8px 11px 8px 8px}
   .infoCard{padding:22px 17px}
   .infoCard h2{font-size:27px}
   .modeInfoGrid{grid-template-columns:1fr}
@@ -271,7 +271,7 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 
 /* Suggestion entry sits directly below the Game Info button. */
 .suggestionButton{
-  position:fixed;left:18px;bottom:82px;z-index:32;display:inline-flex;align-items:center;gap:10px;
+  position:fixed;left:18px;bottom:18px;z-index:32;display:inline-flex;align-items:center;gap:10px;
   margin:0;padding:9px 13px 9px 9px;min-height:54px;border:1px solid rgba(183,205,225,.22);border-radius:17px;
   background:linear-gradient(135deg,rgba(35,47,55,.92),rgba(17,26,32,.82));color:#f3f4f5;text-align:left;
   box-shadow:0 10px 28px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.1);backdrop-filter:blur(18px) saturate(135%);-webkit-backdrop-filter:blur(18px) saturate(135%);
@@ -285,4 +285,4 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 #suggestionText{display:block;width:100%;min-height:130px;resize:vertical;padding:13px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(0,0,0,.2);color:#f4f6f6;font:inherit;font-size:13px;line-height:1.5;outline:none;user-select:text;touch-action:auto}
 #suggestionText:focus{border-color:rgba(174,203,224,.65);box-shadow:0 0 0 3px rgba(174,203,224,.08)}#suggestionText::placeholder{color:#778b91}
 .suggestionFooter{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:7px;color:#81959a;font-size:10px}.suggestionFooter small{margin:0;font-size:10px;color:#91a5aa}.suggestionActions{display:flex;gap:8px;margin-top:16px}.suggestionActions button{flex:1;margin:0;padding:12px 10px;font-size:12px}.savedSuggestions{margin-top:12px;max-height:140px;overflow:auto}.savedSuggestionItem{padding:10px 12px;margin-top:7px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.035);color:#c6d3d5;font-size:11px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}.savedSuggestionDate{display:block;margin-top:4px;color:#82969a;font-size:9px}
-@media(max-width:560px){.suggestionButton{left:12px;bottom:70px;gap:8px;min-height:50px;padding:8px 11px 8px 8px}.suggestionCard{padding:22px 17px}.suggestionActions{flex-direction:column}.suggestionActions button{width:100%}}
+@media(max-width:560px){.suggestionButton{left:12px;bottom:12px;gap:8px;min-height:50px;padding:8px 11px 8px 8px}.suggestionCard{padding:22px 17px}.suggestionActions{flex-direction:column}.suggestionActions button{width:100%}}
