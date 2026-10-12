@@ -544,12 +544,15 @@ if(infoScreen){
   document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeInfo();closeSuggestions();}});
 }
 
-// Suggestions are stored locally in this browser; they are not sent to a server.
+// Suggestions are sent to the Mad Mice creator's Discord webhook.
+// Note: webhook URLs embedded in a public static site can be viewed by anyone.
 var suggestionScreen=document.getElementById("suggestionScreen");
 var suggestionText=document.getElementById("suggestionText");
 var suggestionStatus=document.getElementById("suggestionStatus");
 var suggestionCount=document.getElementById("suggestionCount");
 var savedSuggestions=document.getElementById("savedSuggestions");
+var suggestionSendButton=document.getElementById("saveSuggestion");
+var suggestionWebhook="https://discord.com/api/webhooks/1558992312606916739/pIHM0DBrYmXxdTaANToCy0psdRZLsQcPlFOAiklTJOvMu7l1Lo5jHRI0JPCM4MePNhBZ";
 function getSavedSuggestions(){try{return JSON.parse(localStorage.getItem("madMiceSuggestions")||"[]");}catch(e){return [];}}
 function renderSavedSuggestions(){
   if(!savedSuggestions)return;
@@ -562,16 +565,37 @@ function renderSavedSuggestions(){
 }
 function closeSuggestions(){if(suggestionScreen)suggestionScreen.classList.add("hidden");}
 document.getElementById("suggestionButton").addEventListener("click",function(){
-  renderSavedSuggestions();suggestionScreen.classList.remove("hidden");suggestionStatus.textContent="Suggestions are saved on this device.";suggestionText.focus();
+  renderSavedSuggestions();suggestionScreen.classList.remove("hidden");suggestionStatus.textContent="Your idea will be sent to the Mad Mice creator's Discord.";suggestionText.focus();
 });
 document.getElementById("closeSuggestions").addEventListener("click",closeSuggestions);
 suggestionScreen.addEventListener("click",function(e){if(e.target===suggestionScreen)closeSuggestions();});
 suggestionText.addEventListener("input",function(){suggestionCount.textContent=suggestionText.value.length+" / 600";});
-document.getElementById("saveSuggestion").addEventListener("click",function(){
+suggestionSendButton.addEventListener("click",async function(){
   var value=suggestionText.value.trim();
   if(!value){suggestionStatus.textContent="Write a little idea first!";suggestionText.focus();return;}
-  try{var items=getSavedSuggestions();items.push({text:value,date:new Date().toLocaleString()});localStorage.setItem("madMiceSuggestions",JSON.stringify(items.slice(-30)));suggestionText.value="";suggestionCount.textContent="0 / 600";suggestionStatus.textContent="Saved! This suggestion is only stored in this browser.";renderSavedSuggestions();}
-  catch(e){suggestionStatus.textContent="Could not save in this browser. Check storage settings.";}
+  if(value.length>600){suggestionStatus.textContent="Please keep your idea under 600 characters.";return;}
+  suggestionSendButton.disabled=true;
+  suggestionStatus.textContent="Sending your idea…";
+  try{
+    var response=await fetch(suggestionWebhook,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        content:"🐭 **New Mad Mice suggestion**\n> "+value.replace(/\n/g,"\n> "),
+        allowed_mentions:{parse:[]}
+      })
+    });
+    if(!response.ok)throw new Error("Discord returned "+response.status);
+    try{
+      var items=getSavedSuggestions();items.push({text:value,date:new Date().toLocaleString(),sent:true});
+      localStorage.setItem("madMiceSuggestions",JSON.stringify(items.slice(-30)));
+    }catch(storageError){}
+    suggestionText.value="";suggestionCount.textContent="0 / 600";
+    suggestionStatus.textContent="Sent! Thank you for helping Mad Mice grow 💗";
+    renderSavedSuggestions();
+  }catch(error){
+    suggestionStatus.textContent="Couldn't send right now. Please try again in a moment.";
+  }finally{suggestionSendButton.disabled=false;}
 });
 
 document.getElementById("play").addEventListener("click",function(){startGame("normal")});

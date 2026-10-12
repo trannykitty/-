@@ -36,3 +36,7 @@ Then open the game and press **Ctrl + Shift + R**. Click **Leaderboard** and use
 - Names are public nicknames, not authenticated accounts. Pick a nickname that does not reveal personal information.
 - This is a casual browser-game leaderboard, not a cheat-proof competitive ranking. Players can inspect browser code and call public endpoints themselves; the SQL validates basic score data and only updates a nickname's entry when it improves, but it cannot prove the score was earned honestly. Strong anti-cheat requires server-authoritative gameplay or user accounts and server-side validation.
 - This is a nickname-based board, so two people using the same nickname share the same entry in a mode. Choose a distinctive nickname if that matters.
+
+
+## Suggestions inbox
+Suggestions are posted to the configured Discord webhook from the browser. Because this is a static GitHub Pages site, the webhook URL is visible in the public JavaScript source. If the URL is ever abused, regenerate the webhook in Discord and update `suggestionWebhook` in `script.js`. For stronger protection, route submissions through a server-side endpoint instead.
