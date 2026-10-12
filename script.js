@@ -544,15 +544,14 @@ if(infoScreen){
   document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeInfo();closeSuggestions();}});
 }
 
-// Suggestions are sent to the Mad Mice creator's Discord webhook.
-// Note: webhook URLs embedded in a public static site can be viewed by anyone.
+// Suggestions are sent through a Supabase Edge Function. Keep the Discord webhook server-side.
 var suggestionScreen=document.getElementById("suggestionScreen");
 var suggestionText=document.getElementById("suggestionText");
 var suggestionStatus=document.getElementById("suggestionStatus");
 var suggestionCount=document.getElementById("suggestionCount");
 var savedSuggestions=document.getElementById("savedSuggestions");
 var suggestionSendButton=document.getElementById("saveSuggestion");
-var suggestionWebhook="https://discord.com/api/webhooks/1558992312606916739/pIHM0DBrYmXxdTaANToCy0psdRZLsQcPlFOAiklTJOvMu7l1Lo5jHRI0JPCM4MePNhBZ";
+var suggestionConfig=window.MAD_MICE_LEADERBOARD_CONFIG||{};
 function getSavedSuggestions(){try{return JSON.parse(localStorage.getItem("madMiceSuggestions")||"[]");}catch(e){return [];}}
 function renderSavedSuggestions(){
   if(!savedSuggestions)return;
@@ -577,13 +576,11 @@ suggestionSendButton.addEventListener("click",async function(){
   suggestionSendButton.disabled=true;
   suggestionStatus.textContent="Sending your idea…";
   try{
-    var response=await fetch(suggestionWebhook,{
+    if(!suggestionConfig.url||!suggestionConfig.publishableKey)throw new Error("Supabase is not configured");
+    var response=await fetch(suggestionConfig.url.replace(/\/$/,"")+"/functions/v1/submit-suggestion",{
       method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        content:"🐭 **New Mad Mice suggestion**\n> "+value.replace(/\n/g,"\n> "),
-        allowed_mentions:{parse:[]}
-      })
+      headers:{"Content-Type":"application/json","apikey":suggestionConfig.publishableKey},
+      body:JSON.stringify({suggestion:value})
     });
     if(!response.ok)throw new Error("Discord returned "+response.status);
     try{
