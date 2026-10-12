@@ -143,8 +143,7 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 .proModeButton:hover{transform:translateY(-1px);border-color:rgba(218,190,255,.72);background:linear-gradient(135deg,rgba(130,88,180,.48),rgba(64,48,100,.86))}
 .proModeButton:focus-visible{outline:2px solid #d9bfff;outline-offset:3px}
 .modePro{grid-column:1 / -1;background:linear-gradient(145deg,rgba(158,120,216,.12),rgba(255,255,255,.035))}
-.modePro .modeDot{background:#c3a4fa;box-shadow:0 0 12px rgba(195,164,250,.5)}
-.modePro .modeTag{color:#deccff}
+.modePro .modePro .modeTag{color:#deccff}
 
 /* Crisp, glassy main-menu info button and mode guide */
 .infoButton{
@@ -192,9 +191,7 @@ small{display:block;margin-top:15px;color:#89999d}.results{display:flex;justify-
 .modeEndless{background:linear-gradient(145deg,rgba(133,184,201,.1),rgba(255,255,255,.035))}
 .modeInfoTitle{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .modeInfoTitle h3{font-size:16px;margin:0;letter-spacing:-.25px}
-.modeDot{width:8px;height:8px;flex:none;border-radius:50%;background:#e7a9c1;box-shadow:0 0 12px rgba(231,169,193,.5)}
-.modeEndless .modeDot{background:#91c8d4;box-shadow:0 0 12px rgba(145,200,212,.45)}
-.modeTag{display:inline-flex;padding:5px 8px;margin:0 0 7px;border-radius:7px;background:rgba(255,255,255,.075);color:#e7c4d2;font-size:9px;font-weight:900;letter-spacing:1px}
+.modeEndless .modeTag{display:inline-flex;padding:5px 8px;margin:0 0 7px;border-radius:7px;background:rgba(255,255,255,.075);color:#e7c4d2;font-size:9px;font-weight:900;letter-spacing:1px}
 .modeEndless .modeTag{color:#b8e0e7}
 .modeInfo p,.infoTips p{color:#c3d0d2;font-size:12px;line-height:1.5;margin:0 0 9px}
 .modeInfo ul{margin:0;padding-left:17px;color:#b5c2c5;font-size:11px;line-height:1.6}
