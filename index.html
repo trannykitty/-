@@ -163,9 +163,21 @@
 
 <div id="pauseScreen" class="screen hidden">
   <div class="card">
-    <h2>Paused</h2>
-    <button id="resume" type="button">Continue</button>
-    <button id="quit" class="soft" type="button">Main Menu</button>
+    <div id="pauseMainView">
+      <h2>Paused</h2>
+      <button id="resume" type="button">Continue</button>
+      <button id="openPauseSettings" class="soft" type="button">Settings</button>
+      <button id="quit" class="soft" type="button">Main Menu</button>
+    </div>
+    <div id="pauseSettingsView" class="hidden">
+      <h2>Settings</h2>
+      <p class="settingsHint">Customize your game audio.</p>
+      <div class="settingRow">
+        <span>Background song</span>
+        <button id="bgMusicToggle" class="settingToggle" type="button" aria-pressed="true">On</button>
+      </div>
+      <button id="backToPause" class="soft" type="button">Back</button>
+    </div>
   </div>
 </div>
 

@@ -62,10 +62,11 @@ var hats=[
 ];
 var spawnTimer=0,lastTime=0;
 var soundEnabled=true;
+var bgMusicEnabled=localStorage.getItem("MadMiceBgMusicEnabled")!=="false";
 var bgMusic = document.getElementById("bgMusic");
 
 function startBackgroundMusic(){
-  if(!soundEnabled || !bgMusic || state!=="playing")return;
+  if(!soundEnabled || !bgMusicEnabled || !bgMusic || state!=="playing")return;
   try{
     bgMusic.volume=0.13;
     var p=bgMusic.play();
@@ -611,6 +612,8 @@ document.getElementById("pause").addEventListener("click",function(){
   if(state==="playing"){
     state="paused";
     pauseBackgroundMusic();
+    pauseMainView.classList.remove("hidden");
+    pauseSettingsView.classList.add("hidden");
     pauseScreen.classList.remove("hidden");
   }
 });
@@ -623,6 +626,35 @@ document.getElementById("resume").addEventListener("click",function(){
     lastTime=performance.now();
     requestAnimationFrame(gameLoop);
   }
+});
+
+var pauseMainView=document.getElementById("pauseMainView");
+var pauseSettingsView=document.getElementById("pauseSettingsView");
+var bgMusicToggle=document.getElementById("bgMusicToggle");
+function renderBgMusicToggle(){
+  if(!bgMusicToggle)return;
+  bgMusicToggle.textContent=bgMusicEnabled?"On":"Off";
+  bgMusicToggle.classList.toggle("isOff",!bgMusicEnabled);
+  bgMusicToggle.setAttribute("aria-pressed",String(bgMusicEnabled));
+}
+document.getElementById("openPauseSettings").addEventListener("click",function(){
+  pauseMainView.classList.add("hidden");
+  pauseSettingsView.classList.remove("hidden");
+  renderBgMusicToggle();
+});
+document.getElementById("backToPause").addEventListener("click",function(){
+  pauseSettingsView.classList.add("hidden");
+  pauseMainView.classList.remove("hidden");
+});
+bgMusicToggle.addEventListener("click",function(){
+  bgMusicEnabled=!bgMusicEnabled;
+  localStorage.setItem("MadMiceBgMusicEnabled",String(bgMusicEnabled));
+  if(bgMusicEnabled){
+    startBackgroundMusic();
+  }else{
+    pauseBackgroundMusic();
+  }
+  renderBgMusicToggle();
 });
 
 function mainMenu(){
@@ -806,7 +838,7 @@ document.getElementById("sound").addEventListener("click",function(){
   soundEnabled=!soundEnabled;
   this.textContent=soundEnabled?"🔊":"🔇";
   if(bgMusic){
-    if(soundEnabled){
+    if(soundEnabled && bgMusicEnabled){
       startBackgroundMusic();
     }else{
       try{bgMusic.pause();}catch(e){}
