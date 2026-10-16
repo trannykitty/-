@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="2026.10.11.4";
+var BUILD_VERSION="2026.10.16.1";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
@@ -63,6 +63,8 @@ var hats=[
 var spawnTimer=0,lastTime=0;
 var soundEnabled=true;
 var bgMusicEnabled=localStorage.getItem("MadMiceBgMusicEnabled")!=="false";
+var upgradesEnabled=localStorage.getItem("MadMiceUpgradesEnabled")!=="false";
+function activeUpgradeLevel(id){return upgradesEnabled?(upgrades[id]||0):0;}
 var bgMusic = document.getElementById("bgMusic");
 
 function startBackgroundMusic(){
@@ -245,7 +247,7 @@ function startGame(selectedMode){
 function spawnMouse(){
   var fromLeft=Math.random()<0.5;
   var level=1+Math.floor(score/(mode==="pro"?10:15));
-  var speed=(mode==="pro"?78+Math.random()*52+level*4:55+Math.random()*45+level*2)*(1-(upgrades.slow||0)*0.08);
+  var speed=(mode==="pro"?78+Math.random()*52+level*4:55+Math.random()*45+level*2)*(1-activeUpgradeLevel("slow")*0.08);
   var m={
     x:fromLeft?-70:W+70,
     y:100+Math.random()*Math.max(80,H-190),
@@ -253,7 +255,7 @@ function spawnMouse(){
     phase:Math.random()*Math.PI*2,
     wiggle:5+Math.random()*8,
     size:.9+Math.random()*.18,
-    gold:Math.random()<Math.min(.08+(upgrades.lucky||0)*.025,.23)
+    gold:Math.random()<Math.min(.08+activeUpgradeLevel("lucky")*.025,.23)
   };
   mice.push(m);
 }
@@ -434,7 +436,7 @@ function catchMouse(m,x,y){
   caught++;
   lifetimeCaught++;
   localStorage.setItem("MadMiceLifetimeCaught",String(lifetimeCaught));
-  treats+=(m.gold?5:2)+(upgrades.treats||0);
+  treats+=(m.gold?5:2)+activeUpgradeLevel("treats");
   localStorage.setItem("MadMiceTreats",String(treats));
   score+=m.gold?5:1;
   if(score>(bestScores[mode]||0)){
@@ -459,8 +461,8 @@ function gameLoop(now){
 
   var level=1+Math.floor(score/(mode==="pro"?10:15));
   var interval=mode==="pro"
-    ? Math.max(.38,(.92-level*.035)*(1-(upgrades.rush||0)*0.06))
-    : Math.max(.55,(1.25-level*.025)*(1-(upgrades.rush||0)*0.06));
+    ? Math.max(.38,(.92-level*.035)*(1-activeUpgradeLevel("rush")*0.06))
+    : Math.max(.55,(1.25-level*.025)*(1-activeUpgradeLevel("rush")*0.06));
 
   if(spawnTimer>=interval){
     spawnTimer=0;
@@ -530,7 +532,7 @@ canvas.addEventListener("pointerdown",function(e){
     var m=mice[i];
     var my=m.y+Math.sin(m.phase)*m.wiggle;
     var dx=px-m.x,dy=py-my;
-    var catchRadius=(mode==="pro"?49:58)+(upgrades.magnet||0)*6;
+    var catchRadius=(mode==="pro"?49:58)+activeUpgradeLevel("magnet")*6;
     if(dx*dx+dy*dy<catchRadius*catchRadius){
       catchMouse(m,px,py);
       return;
@@ -631,20 +633,33 @@ document.getElementById("resume").addEventListener("click",function(){
 var pauseMainView=document.getElementById("pauseMainView");
 var pauseSettingsView=document.getElementById("pauseSettingsView");
 var bgMusicToggle=document.getElementById("bgMusicToggle");
+var upgradesToggle=document.getElementById("upgradesToggle");
 function renderBgMusicToggle(){
   if(!bgMusicToggle)return;
   bgMusicToggle.textContent=bgMusicEnabled?"On":"Off";
   bgMusicToggle.classList.toggle("isOff",!bgMusicEnabled);
   bgMusicToggle.setAttribute("aria-pressed",String(bgMusicEnabled));
 }
+function renderUpgradesToggle(){
+  if(!upgradesToggle)return;
+  upgradesToggle.textContent=upgradesEnabled?"On":"Off";
+  upgradesToggle.classList.toggle("isOff",!upgradesEnabled);
+  upgradesToggle.setAttribute("aria-pressed",String(upgradesEnabled));
+}
 document.getElementById("openPauseSettings").addEventListener("click",function(){
   pauseMainView.classList.add("hidden");
   pauseSettingsView.classList.remove("hidden");
   renderBgMusicToggle();
+  renderUpgradesToggle();
 });
 document.getElementById("backToPause").addEventListener("click",function(){
   pauseSettingsView.classList.add("hidden");
   pauseMainView.classList.remove("hidden");
+});
+upgradesToggle.addEventListener("click",function(){
+  upgradesEnabled=!upgradesEnabled;
+  localStorage.setItem("MadMiceUpgradesEnabled",String(upgradesEnabled));
+  renderUpgradesToggle();
 });
 bgMusicToggle.addEventListener("click",function(){
   bgMusicEnabled=!bgMusicEnabled;
