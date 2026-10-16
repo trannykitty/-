@@ -65,12 +65,17 @@ var soundEnabled=true;
 var bgMusic = document.getElementById("bgMusic");
 
 function startBackgroundMusic(){
-  if(!soundEnabled || !bgMusic)return;
+  if(!soundEnabled || !bgMusic || state!=="playing")return;
   try{
-    bgMusic.volume=0.05;
+    bgMusic.volume=0.13;
     var p=bgMusic.play();
     if(p&&p.catch)p.catch(function(){});
   }catch(e){}
+}
+
+function pauseBackgroundMusic(){
+  if(!bgMusic)return;
+  try{bgMusic.pause();}catch(e){}
 }
 
 
@@ -210,6 +215,7 @@ function updateHud(){
 function startGame(selectedMode){
   mode=selectedMode;
   state="playing";
+  startBackgroundMusic();
   score=0;
   caught=0;
   combo=0;
@@ -604,6 +610,7 @@ document.getElementById("proMode").addEventListener("click",function(){startGame
 document.getElementById("pause").addEventListener("click",function(){
   if(state==="playing"){
     state="paused";
+    pauseBackgroundMusic();
     pauseScreen.classList.remove("hidden");
   }
 });
@@ -611,6 +618,7 @@ document.getElementById("pause").addEventListener("click",function(){
 document.getElementById("resume").addEventListener("click",function(){
   if(state==="paused"){
     state="playing";
+    startBackgroundMusic();
     pauseScreen.classList.add("hidden");
     lastTime=performance.now();
     requestAnimationFrame(gameLoop);
@@ -620,6 +628,7 @@ document.getElementById("resume").addEventListener("click",function(){
 function mainMenu(){
   if(state==="playing" || state==="paused")submitRunScore();
   state="menu";
+  pauseBackgroundMusic();
   mice=[];
   particles=[];
   hud.classList.add("hidden");
