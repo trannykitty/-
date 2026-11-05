@@ -345,3 +345,10 @@ button:focus:not(:focus-visible) { outline: none; }
 .discordInviteFloat:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .discordInviteIcon{display:grid;place-items:center;width:22px;height:22px;border-radius:7px;background:rgba(255,255,255,.17);font-size:16px;line-height:1}
 @media(max-width:520px){.discordInviteFloat{right:12px;bottom:12px;padding:10px 13px;border-radius:14px;font-size:12px}}
+
+/* Keep the two lower-left menu buttons neatly stacked. */
+.infoButton,.suggestionButton{width:190px;box-sizing:border-box;}
+.infoButton{bottom:18px;}
+.suggestionButton{bottom:82px;}
+.infoButtonLabel,.suggestionButtonLabel{flex:1;min-width:0;}
+@media(max-width:560px){.infoButton,.suggestionButton{width:180px}.infoButton{bottom:12px}.suggestionButton{bottom:72px}}
