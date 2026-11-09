@@ -408,3 +408,15 @@ button:focus:not(:focus-visible) { outline: none; }
   border-color:rgba(245,205,222,.48)!important;
   box-shadow:0 13px 32px rgba(0,0,0,.32),0 0 22px rgba(229,164,190,.08),inset 0 1px 0 rgba(255,255,255,.15)!important;
 }
+
+
+/* v1.0.17: align the three lower-left shortcuts as one evenly spaced stack. */
+#menu #shop.shopButton{left:12px!important;bottom:136px!important;width:180px!important;min-width:180px!important;max-width:180px!important;height:50px!important;min-height:50px!important;margin:0!important;box-sizing:border-box!important;}
+#suggestionButton.suggestionButton{left:12px!important;bottom:74px!important;width:180px!important;min-width:180px!important;max-width:180px!important;height:50px!important;min-height:50px!important;margin:0!important;box-sizing:border-box!important;}
+#infoButton.infoButton{left:12px!important;bottom:12px!important;width:180px!important;min-width:180px!important;max-width:180px!important;height:50px!important;min-height:50px!important;margin:0!important;box-sizing:border-box!important;}
+@media(max-width:560px){
+  #menu #shop.shopButton,#suggestionButton.suggestionButton,#infoButton.infoButton{left:12px!important;width:180px!important;min-width:180px!important;max-width:calc(100vw - 24px)!important;}
+  #menu #shop.shopButton{bottom:136px!important;}
+  #suggestionButton.suggestionButton{bottom:74px!important;}
+  #infoButton.infoButton{bottom:12px!important;}
+}
