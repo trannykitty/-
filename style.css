@@ -381,3 +381,13 @@ button:focus:not(:focus-visible) { outline: none; }
 /* Restore consistent floating menu button layout. */
 .shopButton{position:fixed!important;left:18px;bottom:146px;z-index:32;width:190px;box-sizing:border-box}
 @media(max-width:560px){.shopButton{left:12px;bottom:132px;width:180px}}
+
+
+/* v1.0.15 layout repair: restore compact horizontal floating menu buttons. */
+.shopButton{position:fixed!important;left:12px!important;bottom:146px!important;z-index:32!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;width:180px!important;min-width:180px!important;max-width:180px!important;min-height:50px!important;height:50px!important;box-sizing:border-box!important;margin:0!important;padding:8px 11px 8px 8px!important;border-radius:17px!important;text-align:left!important;white-space:nowrap!important;}
+.shopButton .shopIcon{flex:none!important;width:34px!important;height:34px!important;}
+.shopButton .shopButtonLabel{display:flex!important;flex:1 1 auto!important;flex-direction:column!important;align-items:flex-start!important;min-width:0!important;}
+.shopButton .infoArrow{flex:none!important;margin-left:auto!important;}
+.suggestionButton{left:12px!important;bottom:76px!important;right:auto!important;width:180px!important;min-width:180px!important;max-width:180px!important;min-height:50px!important;height:50px!important;box-sizing:border-box!important;display:inline-flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;white-space:nowrap!important;}
+.infoButton{left:12px!important;bottom:12px!important;right:auto!important;width:180px!important;min-width:180px!important;max-width:180px!important;min-height:50px!important;height:50px!important;box-sizing:border-box!important;display:inline-flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;white-space:nowrap!important;}
+@media(max-width:560px){.shopButton{left:12px!important;bottom:146px!important;width:180px!important;min-width:180px!important;max-width:calc(100vw - 24px)!important}.suggestionButton{left:12px!important;bottom:76px!important;width:180px!important;min-width:180px!important;max-width:calc(100vw - 24px)!important}.infoButton{left:12px!important;bottom:12px!important;width:180px!important;min-width:180px!important;max-width:calc(100vw - 24px)!important}}
