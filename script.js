@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="1.0.19";
+var BUILD_VERSION="1.0.20";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
@@ -64,6 +64,7 @@ var spawnTimer=0,lastTime=0;
 var soundEnabled=true;
 var bgMusicEnabled=localStorage.getItem("MadMiceBgMusicEnabled")!=="false";
 var upgradesEnabled=localStorage.getItem("MadMiceUpgradesEnabled")!=="false";
+var clickSoundsEnabled=localStorage.getItem("MadMiceClickSoundsEnabled")!=="false";
 function activeUpgradeLevel(id){return upgradesEnabled?(upgrades[id]||0):0;}
 var bgMusic = document.getElementById("bgMusic");
 
@@ -83,6 +84,15 @@ function pauseBackgroundMusic(){
 
 
 var catchSound=document.getElementById("catchSound");var goldSound=document.getElementById("goldSound");
+var uiClickSound=new Audio("./click.wav");
+function playUiClickSound(){
+  if(!clickSoundsEnabled||!soundEnabled||!uiClickSound)return;
+  try{uiClickSound.currentTime=0;uiClickSound.volume=0.22;var p=uiClickSound.play();if(p&&p.catch)p.catch(function(){});}catch(e){}
+}
+document.addEventListener("click",function(e){
+  var button=e.target&&e.target.closest?e.target.closest("button"):null;
+  if(button&&!button.disabled)playUiClickSound();
+},true);
 
 function playCatchSound(isGold){
   if(!soundEnabled)return;
@@ -634,6 +644,7 @@ var pauseMainView=document.getElementById("pauseMainView");
 var pauseSettingsView=document.getElementById("pauseSettingsView");
 var bgMusicToggle=document.getElementById("bgMusicToggle");
 var upgradesToggle=document.getElementById("upgradesToggle");
+var clickSoundToggle=document.getElementById("clickSoundToggle");
 function renderBgMusicToggle(){
   if(!bgMusicToggle)return;
   bgMusicToggle.textContent=bgMusicEnabled?"On":"Off";
@@ -646,15 +657,27 @@ function renderUpgradesToggle(){
   upgradesToggle.classList.toggle("isOff",!upgradesEnabled);
   upgradesToggle.setAttribute("aria-pressed",String(upgradesEnabled));
 }
+function renderClickSoundToggle(){
+  if(!clickSoundToggle)return;
+  clickSoundToggle.textContent=clickSoundsEnabled?"On":"Off";
+  clickSoundToggle.classList.toggle("isOff",!clickSoundsEnabled);
+  clickSoundToggle.setAttribute("aria-pressed",String(clickSoundsEnabled));
+}
 document.getElementById("openPauseSettings").addEventListener("click",function(){
   pauseMainView.classList.add("hidden");
   pauseSettingsView.classList.remove("hidden");
   renderBgMusicToggle();
   renderUpgradesToggle();
+  renderClickSoundToggle();
 });
 document.getElementById("backToPause").addEventListener("click",function(){
   pauseSettingsView.classList.add("hidden");
   pauseMainView.classList.remove("hidden");
+});
+clickSoundToggle.addEventListener("click",function(){
+  clickSoundsEnabled=!clickSoundsEnabled;
+  localStorage.setItem("MadMiceClickSoundsEnabled",String(clickSoundsEnabled));
+  renderClickSoundToggle();
 });
 upgradesToggle.addEventListener("click",function(){
   upgradesEnabled=!upgradesEnabled;
