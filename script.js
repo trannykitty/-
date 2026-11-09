@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="1.0.21";
+var BUILD_VERSION="1.0.22";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
@@ -96,7 +96,7 @@ document.addEventListener("click",function(e){
 },true);
 
 function playCatchSound(isGold){
-  if(!soundEnabled)return;
+  if(!mouseCatchSoundsEnabled)return;
   try{
     var snd=isGold?goldSound:catchSound;
     if(!snd)return;
@@ -665,12 +665,19 @@ function renderClickSoundToggle(){
   clickSoundToggle.classList.toggle("isOff",!clickSoundsEnabled);
   clickSoundToggle.setAttribute("aria-pressed",String(clickSoundsEnabled));
 }
+function renderMouseCatchSoundToggle(){
+  if(!mouseCatchSoundToggle)return;
+  mouseCatchSoundToggle.textContent=mouseCatchSoundsEnabled?"On":"Off";
+  mouseCatchSoundToggle.classList.toggle("isOff",!mouseCatchSoundsEnabled);
+  mouseCatchSoundToggle.setAttribute("aria-pressed",String(mouseCatchSoundsEnabled));
+}
 document.getElementById("openPauseSettings").addEventListener("click",function(){
   pauseMainView.classList.add("hidden");
   pauseSettingsView.classList.remove("hidden");
   renderBgMusicToggle();
   renderUpgradesToggle();
   renderClickSoundToggle();
+  renderMouseCatchSoundToggle();
 });
 document.getElementById("backToPause").addEventListener("click",function(){
   pauseSettingsView.classList.add("hidden");
@@ -680,6 +687,11 @@ clickSoundToggle.addEventListener("click",function(){
   clickSoundsEnabled=!clickSoundsEnabled;
   localStorage.setItem("MadMiceClickSoundsEnabled",String(clickSoundsEnabled));
   renderClickSoundToggle();
+});
+mouseCatchSoundToggle.addEventListener("click",function(){
+  mouseCatchSoundsEnabled=!mouseCatchSoundsEnabled;
+  localStorage.setItem("MadMiceMouseCatchSoundsEnabled",String(mouseCatchSoundsEnabled));
+  renderMouseCatchSoundToggle();
 });
 upgradesToggle.addEventListener("click",function(){
   upgradesEnabled=!upgradesEnabled;
@@ -874,17 +886,7 @@ leaderboardPlayerName.addEventListener("keydown",function(e){if(e.key==="Enter")
 leaderboardScreen.addEventListener("click",function(e){if(e.target===leaderboardScreen)closeLeaderboard();});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!leaderboardScreen.classList.contains("hidden"))closeLeaderboard();});
 
-document.getElementById("sound").addEventListener("click",function(){
-  soundEnabled=!soundEnabled;
-  this.textContent=soundEnabled?"🔊":"🔇";
-  if(bgMusic){
-    if(soundEnabled && bgMusicEnabled){
-      startBackgroundMusic();
-    }else{
-      try{bgMusic.pause();}catch(e){}
-    }
-  }
-});
+
 
 // Checks the tiny version manifest on GitHub Pages without relying on cached responses.
 // When the published version changes, prompt the player to hard-refresh the browser.
