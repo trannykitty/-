@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="1.0.9";
+var BUILD_VERSION="1.0.10";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;

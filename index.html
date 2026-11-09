@@ -8,7 +8,7 @@
 </head>
 <body>
 <canvas id="game"></canvas>
-<a class="discordInviteFloat" href="https://discord.gg/R5ZeXWHMEe" target="_blank" rel="noopener noreferrer" aria-label="Join the Mad Mice Discord server"><span class="discordInviteIcon" aria-hidden="true"><img src="./discord-icon.svg" alt=""></span><span>Join Discord</span></a>
+<a class="discordInviteFloat" href="https://discord.gg/R5ZeXWHMEe" target="_blank" rel="noopener noreferrer" aria-label="Join the Mad Mice Discord server"><span class="discordInviteIcon" aria-hidden="true">☁</span><span>Join Discord</span></a>
 
 <audio id="catchSound" preload="auto" src="./click.wav"></audio><audio id="goldSound" preload="auto" src="./gold.wav"></audio>
 <div id="hud" class="hidden">
@@ -23,28 +23,25 @@
   <div class="card">
     <h1>Mad Mice</h1>
     <p>A tiny, cozy game about catching wandering mice.<br>There is no rush. Just relax and play.</p>
+    <button id="leaderboardButton" class="leaderboardButton" type="button" aria-label="Open leaderboard">
+      <img class="leaderboardButtonIcon" src="./ranking.svg" alt="" aria-hidden="true">
+      <span>Leaderboard</span>
+    </button>
     <div class="modeButtons">
       <button id="play" type="button">Relax &amp; Play</button>
       <button id="proMode" class="proModeButton" type="button">Pro Mode</button>
       <button id="endless" class="soft" type="button">Endless &amp; Chill</button>
     </div>
-    <button id="shop" class="shopButton" type="button" aria-label="Open Mouse Shop">
-      <span class="shopIcon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" focusable="false"><path d="M5 8.5h14l1 12H4l1-12Z"/><path d="M8.5 9V6.5a3.5 3.5 0 0 1 7 0V9"/><path d="M9 13.5c1.7 1.5 4.3 1.5 6 0"/></svg>
-      </span>
-      <span class="shopButtonLabel"><strong>Mouse Shop</strong><small>Hats &amp; upgrades</small></span>
-      <span class="infoArrow" aria-hidden="true">›</span>
-    </button>
-    <button id="leaderboardButton" class="leaderboardButton" type="button">🏆 Leaderboard</button>
+    <button id="shop" class="shopButton" type="button">Mouse Shop</button>
   </div>
-  <button id="suggestionButton" class="suggestionButton" type="button" aria-haspopup="dialog" aria-controls="suggestionScreen">
-    <span class="suggestionIcon" aria-hidden="true"><img src="ai-commentary.svg" alt=""></span>
-    <span class="suggestionButtonLabel"><strong>Suggestions</strong><small>Share an idea</small></span>
-    <span class="infoArrow" aria-hidden="true">›</span>
-  </button>
-    <button id="infoButton" class="infoButton" type="button" aria-haspopup="dialog" aria-controls="infoScreen">
+  <button id="infoButton" class="infoButton" type="button" aria-haspopup="dialog" aria-controls="infoScreen">
     <span class="infoIcon" aria-hidden="true"><span></span></span>
     <span class="infoButtonLabel"><strong>Game Info</strong><small>Modes &amp; tips</small></span>
+    <span class="infoArrow" aria-hidden="true">›</span>
+  </button>
+  <button id="suggestionButton" class="suggestionButton" type="button" aria-haspopup="dialog" aria-controls="suggestionScreen">
+    <span class="suggestionIcon" aria-hidden="true">✎</span>
+    <span class="suggestionButtonLabel"><strong>Suggestions</strong><small>Share an idea</small></span>
     <span class="infoArrow" aria-hidden="true">›</span>
   </button>
 </div>
