@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="1.0.20";
+var BUILD_VERSION="1.0.21";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
@@ -65,6 +65,7 @@ var soundEnabled=true;
 var bgMusicEnabled=localStorage.getItem("MadMiceBgMusicEnabled")!=="false";
 var upgradesEnabled=localStorage.getItem("MadMiceUpgradesEnabled")!=="false";
 var clickSoundsEnabled=localStorage.getItem("MadMiceClickSoundsEnabled")!=="false";
+var mouseCatchSoundsEnabled=localStorage.getItem("MadMiceMouseCatchSoundsEnabled")!=="false";
 function activeUpgradeLevel(id){return upgradesEnabled?(upgrades[id]||0):0;}
 var bgMusic = document.getElementById("bgMusic");
 
@@ -84,7 +85,7 @@ function pauseBackgroundMusic(){
 
 
 var catchSound=document.getElementById("catchSound");var goldSound=document.getElementById("goldSound");
-var uiClickSound=new Audio("./click.wav");
+var uiClickSound=new Audio("./osu-hit-sound.mp3");
 function playUiClickSound(){
   if(!clickSoundsEnabled||!soundEnabled||!uiClickSound)return;
   try{uiClickSound.currentTime=0;uiClickSound.volume=0.22;var p=uiClickSound.play();if(p&&p.catch)p.catch(function(){});}catch(e){}
@@ -645,6 +646,7 @@ var pauseSettingsView=document.getElementById("pauseSettingsView");
 var bgMusicToggle=document.getElementById("bgMusicToggle");
 var upgradesToggle=document.getElementById("upgradesToggle");
 var clickSoundToggle=document.getElementById("clickSoundToggle");
+var mouseCatchSoundToggle=document.getElementById("mouseCatchSoundToggle");
 function renderBgMusicToggle(){
   if(!bgMusicToggle)return;
   bgMusicToggle.textContent=bgMusicEnabled?"On":"Off";
