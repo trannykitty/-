@@ -2,7 +2,7 @@
 "use strict";
 
 // Keep this in sync with version.json whenever publishing a new game build.
-var BUILD_VERSION="1.0.12";
+var BUILD_VERSION="1.0.19";
 var updatePending=false;
 var updateNoticeShown=false;
 var updateNotice=null;
@@ -876,7 +876,7 @@ function ensureUpdateNotice(){
   var card=document.createElement("div");
   card.className="card updateNoticeCard";
   card.innerHTML=
-    '<div class="updateBadge"><span class="updateBadgeDot"></span> UPDATE AVAILABLE</div>'+
+    '<div class="updateBadge">UPDATE AVAILABLE</div>'+
     '<h2 id="updateNoticeTitle">Mad Mice has an update</h2>'+
     '<p class="updateNoticeText">A newer version has been published. To load the latest fixes and features, hard-refresh this page:</p>'+
     '<div class="updateKeys" aria-label="Press Control, Shift, and R together"><kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>R</kbd></div>'+
