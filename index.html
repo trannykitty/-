@@ -28,7 +28,13 @@
       <button id="proMode" class="proModeButton" type="button">Pro Mode</button>
       <button id="endless" class="soft" type="button">Endless &amp; Chill</button>
     </div>
-    <button id="shop" class="shopButton" type="button">Mouse Shop</button>
+    <button id="shop" class="shopButton" type="button" aria-label="Open Mouse Shop">
+      <span class="shopIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M5 8.5h14l1 12H4l1-12Z"/><path d="M8.5 9V6.5a3.5 3.5 0 0 1 7 0V9"/><path d="M9 13.5c1.7 1.5 4.3 1.5 6 0"/></svg>
+      </span>
+      <span class="shopButtonLabel"><strong>Mouse Shop</strong><small>Hats &amp; upgrades</small></span>
+      <span class="infoArrow" aria-hidden="true">›</span>
+    </button>
     <button id="leaderboardButton" class="leaderboardButton" type="button">🏆 Leaderboard</button>
   </div>
   <button id="suggestionButton" class="suggestionButton" type="button" aria-haspopup="dialog" aria-controls="suggestionScreen">
